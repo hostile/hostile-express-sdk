@@ -10,12 +10,23 @@ api core module written in node in preparation for v2
 // create a new api with version 1, name example, and no middleware
 const api = new require('api-core').API(1, 'example', []);
 
-const path = api.getPath(); // /v1/example
+// get the path of the api (e.g. /v1/example)
+const path = api.getPath(); 
 
-const router = api.getRouter(); // express router
+// get the express router of the api, this will run unit tests
+// and return a rounter will all passed routes
+const router = api.getRouter();
 
-app.use(api.getPath(), api.getRouter()); // pass the router to express
+// get a list of enabled routes, this will also run unit tests
+const enabled = api.getEnabledRoutes();
 
+// log enabled routes
+enabled.forEach(route => {
+    console.log(route.getMethod() + ' ' + route.getPath());
+});
+
+// pass the router to express
+app.use(path, router);
 ```
 
 ### Route
