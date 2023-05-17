@@ -6,14 +6,16 @@ declare module 'api-core' {
         constructor();
 
         use(): void;
-        setUse(use: Function): void;
+        setUse(fn: Function): void;
     }
 
     export class Route {
         enabled: boolean;
 
         constructor(method: string, path: string, parameters: Array<any>, handler: Function);
+
         test(): void;
+        setTest(fn: Function): void;
     }
 
     export class API {
