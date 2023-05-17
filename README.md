@@ -38,6 +38,15 @@ const route = new Route('get', '/example', [], (req, res) => {
     res.send('Hello World!');
 });
 
+// set route unit test (returns true by default)
+route.setTest(() => {
+    
+    if (1+1 == 2)
+        return true;
+    else
+        return false;
+
+});
 ```
 
 ### Middleware
