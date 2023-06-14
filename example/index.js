@@ -23,8 +23,8 @@ auth.setUse((req, res, next) => {
 std.setUse((req, res, next) => {
 
     // example parameter check
-    if (this.parameters.length > 0) {
-        this.parameters.forEach(parameter => {
+    if (super.parameters.length > 0) {
+        super.parameters.forEach(parameter => {
             if (!req.query[parameter]) {
                 return Error('missing parameter');
             }
