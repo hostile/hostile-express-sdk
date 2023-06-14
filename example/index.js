@@ -35,7 +35,7 @@ std.setUse((req, res, next) => {
 });
 
 // create a new api
-const api = new API('/api', 1, [auth, std]);
+const api = new API(1, '/api', [auth, std]);
 
 // create a route that returns all enabled routes
 api.addRoute(new Route('get', '/routes', [], (req, res) => {
