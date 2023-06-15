@@ -133,16 +133,18 @@ const route = new Route('GET', '/example', [], (req, res) => {
 
 api.addRoute(route);
 
-async init() {
+const init = async () => {
     // callback
     api.getRouter().then((router) => {
-        app.use(api.getPath(), router);
+        app.use(api.path, router);
     })
     
     // await
     const apiRouter = await api.getRouter();
-    app.use(api.getPath, apiRouter);
+    app.use(api.path, apiRouter);
 }
 
-init();
+init().then(() => {
+    console.log('Initialized!');
+})
 ```
