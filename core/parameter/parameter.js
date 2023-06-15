@@ -46,14 +46,6 @@ module.exports = class Parameter {
     }
 
     /**
-     * Returns the parameter's name
-     * @return The parameter's name
-     */
-    getName() {
-        return this.name;
-    }
-
-    /**
      * Tests if the parameter provided is valid
      * @param req The request object
      * @param args The query or post body
