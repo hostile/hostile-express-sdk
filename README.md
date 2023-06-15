@@ -28,7 +28,7 @@ const api = new require('api-core').API(1, 'example', []);
 /**
  * Returns the path of the API (for example, /v1/example)
  */
-const path = api.getPath();
+const path = api.path;
 
 /**
  * Returns the express router of the API, which will run
