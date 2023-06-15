@@ -1,9 +1,9 @@
 module.exports = class Parameter {
 
-    validationFunction
-    mappingFunction
-    required = false
-    name
+    validationFunction;
+    mappingFunction;
+    required = false;
+    name;
 
     /**
      * Sets the validation function
