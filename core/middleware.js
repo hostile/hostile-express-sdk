@@ -10,8 +10,8 @@ module.exports = class Middleware {
     }
 
     /**
-     * Sets the use function
-     * @param fn The use function
+     * Sets the handler
+     * @param fn The handler function
      */
     setUse(fn) {
         this.use = fn;
