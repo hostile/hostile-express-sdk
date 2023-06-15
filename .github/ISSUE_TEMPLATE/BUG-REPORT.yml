@@ -1,0 +1,37 @@
+name: "Bug Report"
+description: Create a report on a bug, error, or incompatibility
+title: "[BUG] - <title>"
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: Please enter a description of the bug. Including a link to logs can be helpful.
+    validations:
+      required: true
+  - type: textarea
+    id: version
+    attributes:
+      label: "Version"
+      description: What version of the Hostile API core are you encountering this bug with?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "Reproduction Steps"
+      description: How can we reproduce this error?
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: "Operating System"
+      description: What operating system do you encounter this issue on?
+      multiple: true
+      options:
+        - Windows
+        - macOS
+        - Linux
+    validations:
+      required: true

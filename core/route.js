@@ -4,9 +4,7 @@ const express = require('express');
 class Route {
 
     enabled = true;
-
     parameters = [];
-
     handler;
 
     constructor(method, path) {

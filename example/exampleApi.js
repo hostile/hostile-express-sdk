@@ -2,7 +2,7 @@ const {API, Parameter, Route, Standardization} = require("../index");
 const express = require("express");
 
 // create api service
-const aOSINT = new API(1, '/osint');
+const api = new API(1, '/osint');
 
 // common use parameter
 pUsername = new Parameter('username', String);
