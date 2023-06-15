@@ -11,7 +11,7 @@ module.exports = class API {
     }
 
     addMiddleware(mwFunction) {
-        this.middleware.push(mwFunction)
+        this.middleware.push(mwFunction);
     }
 
     /**
@@ -27,7 +27,7 @@ module.exports = class API {
      * @returns The API route
      */
     getPath() {
-        return `/v${this.version}${this.routePath}`
+        return `/v${this.version}${this.routePath}`;
     }
 
     /**
@@ -82,8 +82,7 @@ module.exports = class API {
      * @returns An array of all enabled routes
      */
     async getEnabledRoutes() {
-        await this.testRoutes()
-
+        await this.testRoutes();
         return this.routes.filter(route => route.enabled);
     }
 }
