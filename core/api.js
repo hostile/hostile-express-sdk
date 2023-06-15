@@ -40,7 +40,7 @@ module.exports = class API {
         const router = express.Router();
 
         this.routes.filter(route => route.enabled).forEach(route => {
-            switch (route.method) {
+            switch (route.method.toUpperCase()) {
                 case 'GET':
                     router.get(route.path, route.handler);
                     break;

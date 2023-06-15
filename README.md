@@ -86,7 +86,7 @@ route.setTest(() => {
 const middleware = new Middleware();
 
 // define its use function
-middleware.use((req, res, next) => {
+middleware.setUse((req, res, next) => {
     console.log('Hello World!');
     next();
 });
@@ -102,19 +102,20 @@ const { Middleware, API, Route } = require('api-core');
 const app = express();
 const std = new Middleware();
 
-std.use((req, res, next) => {
+std.setUse((req, res, next) => {
     console.log('Hello World!');
     next();
 });
 
 const api = new API(1, 'example', [std]);
 
-const route = new Route('get', '/example', [], (req, res) => {
+const route = new Route('GET', '/example', [], (req, res) => {
     res.send('Hello World!');
 });
 
 api.addRoute(route);
-
-app.use(api.getPath(), api.getRouter());
+api.getRouter().then((router) => {
+    app.use(api.getPath(), router);
+})
 ```
 
