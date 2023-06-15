@@ -27,13 +27,21 @@ class API {
 
     // get the express router for this api
     async getRouter() {
-        await this.testRoutes();
+        // await this.testRoutes();
 
         const router = express.Router();
 
         this.routes.forEach(route => {
-            if (route.enabled)
-                router[route.method](route.path, route.handler);
+            if (route.enabled) {
+                switch (route.method) {
+                    case 'GET':
+                        router.get(route.path, route.handler);
+                        break;
+                    case 'POST':
+                        router.post(route.path, route.handler);
+                        break;
+                }
+            }
         });
 
         this.middleware.forEach(mw => { router.use(mw()) })
