@@ -1,4 +1,4 @@
-class Route {
+module.exports = class Route {
 
     enabled = true;
     parameters = [];
@@ -87,5 +87,3 @@ class Route {
         return this;
     }
 }
-
-module.exports = Route;
