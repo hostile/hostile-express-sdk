@@ -10,6 +10,10 @@ module.exports = class API {
         this.routePath = routePath;
     }
 
+    /**
+     * Registers a middleware class to the API
+     * @param mwFunction The middleware object
+     */
     addMiddleware(mwFunction) {
         this.middleware.push(mwFunction);
     }
