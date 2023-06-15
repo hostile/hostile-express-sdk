@@ -19,7 +19,6 @@ request with your changes. Please follow the provided pull request format.
 ### Implementation - API
 
 ```javascript
-
 /**
  * Creates a new API instance, with the version set to one,
  * the default route set to "example", and no middleware
@@ -60,7 +59,6 @@ app.use(path, router);
 ### Implementation - Routes
 
 ```javascript
-
 /**
  * Creates a new GET route on /example, that responds to requests
  * with "Hello World!"
@@ -81,26 +79,46 @@ route.setTest(() => {
 ### Implementation - Middleware
 
 ```javascript
-
-// create a new middleware
+/**
+* Create a new middleware object
+*/
 const middleware = new Middleware();
 
-// define its use function
+/**
+* Define its handler
+*/
 middleware.setUse((req, res, next) => {
     console.log('Hello World!');
     next();
 });
-
 ```
+  
+### Implmentation - Parameter  
+  
+```javascript
 
+/*
+* Create a route parameter object
+*/
+const param = new Parameter()
+                    .setName('username')
+                    .setRequired(true)
+                    .setValidationFunction((username) => standardizeUsername(username));
+
+/*
+* Add that object to array of route params
+*/
+route.setParameters([param]);
+``` 
+  
 ### Example
 
 ```javascript
-const express = require('express');
 const { Middleware, API, Route } = require('api-core');
+const express = require('express');
 
-const app = express();
 const std = new Middleware();
+const app = express();
 
 std.setUse((req, res, next) => {
     console.log('Hello World!');
@@ -114,8 +132,17 @@ const route = new Route('GET', '/example', [], (req, res) => {
 });
 
 api.addRoute(route);
-api.getRouter().then((router) => {
-    app.use(api.getPath(), router);
-})
-```
 
+async init() {
+    // callback
+    api.getRouter().then((router) => {
+        app.use(api.getPath(), router);
+    })
+    
+    // await
+    const apiRouter = await api.getRouter();
+    app.use(api.getPath, apiRouter);
+}
+
+init();
+```
