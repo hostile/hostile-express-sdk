@@ -1,56 +1,85 @@
+module.exports = class Parameter {
 
-// standardization already checks length for ip & phone
-// not setting a standard bypasses checks
-// not setting any length property bypasses checks
+    validationFunction
+    mappingFunction
+    required = false
+    name
 
-class Parameter {
+    /**
+     * Sets the validation function
+     * @param validationFunction The function that determines if an input is valid
+     * @returns The current Parameter instance
+     */
+    setValidationFunction(validationFunction) {
+        this.validationFunction = validationFunction;
+        return this;
+    }
 
-    std;
-    minLength;
-    maxLength;
-    mustBeOfLength;
+    /**
+     * Sets the mapping function
+     * @param mappingFunction The function that maps the query into a readable state
+     * @returns The current Parameter instance
+     */
+    setMappingFunction(mappingFunction) {
+        this.mappingFunction = mappingFunction;
+        return this;
+    }
 
-    constructor(name, type) {
+    /**
+     * Sets the name of the parameter
+     * @param name The name of the parameter
+     * @returns The current parameter instance
+     */
+    setName(name) {
         this.name = name;
-        this.type = type;
+        return this;
     }
 
-    setMinMax(min, max) {
-        this.minLength = min;
-        this.maxLength = max;
+    /**
+     * Sets if the parameter should be required
+     * @param required Whether the parameter should be required
+     * @returns The current parameter instance
+     */
+    setRequired(required) {
+        this.required = required;
+        return this;
     }
 
-    setRequiredLength(len) {
-        this.mustBeOfLength = len;
+    /**
+     * Returns the parameter's name
+     * @return The parameter's name
+     */
+    getName() {
+        return this.name;
     }
 
-    setStandard(standardFunction) {
-        this.std = standardFunction;
-    }
+    /**
+     * Tests if the parameter provided is valid
+     * @param req The request object
+     * @param args The query or post body
+     * @returns If the parameter is valid
+     */
+    test(req, args) {
+        const inQuery = this.name in args;
 
-    validate(value) {
-        if (value === null) return false;
-
-        if (this.std !== null) {
-            let standard = this.std(value);
-
-            if (!standard) return false;
-        }
-
-        if (typeof value !== this.type) {
+        if (!(this.name in args) && this.required) {
             return false;
         }
 
-        if (this.minLength !== null && this.maxLength !== null) {
-            return value > this.minLength && value < this.maxLength;
+        if (inQuery) {
+            let value = args[this.name];
+
+            if (this.mappingFunction !== undefined) {
+                value = this.mappingFunction(value);
+            }
+
+            if (this.validationFunction !== undefined && !this.validationFunction(value)) {
+                return false;
+            }
+
+            req.queryParams[this.name] = value;
         }
 
-        if (this.mustBeOfLength !== null) {
-            return value === this.mustBeOfLength;
-        }
-
-        return this.minLength === null;
+        return true;
     }
 }
-
-module.exports = Parameter;

@@ -1,10 +1,9 @@
-const express = require('express');
-
-// route class to be impl under an api
 class Route {
 
     enabled = true;
     parameters = [];
+    postBodyFields = [];
+
     handler;
 
     constructor(method, path) {
@@ -12,20 +11,81 @@ class Route {
         this.path = path;
     }
 
-    // abstract route test func
-    test() { return true; }
+    /**
+     * Abstract test function, to be overridden by classes extending Route
+     * @returns Whether the test is passed
+     */
+    test() {
+        return true;
+    }
 
-    // define test func
-    setTest(fn) { this.test = fn; }
+    /**
+     * Sets the test function
+     * @param fn The function to be called when running tests
+     * @returns The current Route instance
+     */
+    setTest(fn) {
+        this.test = fn;
+        return this;
+    }
 
+    /**
+     * Sets the expected parameters
+     * @param params The expected parameters
+     * @returns The current Route instance
+     */
     setParameters(params) {
         this.parameters = params;
+        return this;
     }
 
+    /**
+     * Sets the expected POST body fields
+     * @param postFields The required post fields
+     * @returns The current Route instance
+     */
+    setPostBodyFields(postFields) {
+        this.postBodyFields = postFields;
+        return this;
+    }
+
+    /**
+     * Sets the route handling function
+     * @param handler The handling function
+     * @returns The current Route instance
+     */
     setHandler(handler) {
-        this.handler = handler;
-    }
+        this.handler = (req, res) => {
+            const query = req.query;
+            const body = req.body;
 
+            req.queryParams = {};
+            req.postBody = {};
+
+            for (const parameter of this.parameters) {
+                if (!parameter.test(req, query)) {
+                    res.status(400).json({
+                        status: 'failed',
+                        message: `Missing query parameter ${parameter.getName()}`
+                    });
+                    return;
+                }
+            }
+
+            for (const field of this.postBodyFields) {
+                if (!field.test(req, body)) {
+                    res.status(400).json({
+                        status: 'failed',
+                        message: `Missing post body field ${field.getName()}`
+                    });
+                    return;
+                }
+            }
+
+            handler(req, res);
+        }
+        return this;
+    }
 }
 
 module.exports = Route;

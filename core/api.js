@@ -1,9 +1,8 @@
 const express = require('express');
 
-class API {
+module.exports = class API {
 
     routes = [];
-
     middleware = [];
 
     constructor(version, routePath) {
@@ -15,59 +14,76 @@ class API {
         this.middleware.push(mwFunction)
     }
 
-    // add a route to the api
+    /**
+     * Registers a route within the API
+     * @param route The route to register
+     */
     addRoute(route) {
         this.routes.push(route);
     }
 
-    // get the routing path
+    /**
+     * Determines the version-inclusive API route
+     * @returns The API route
+     */
     getPath() {
-        return `/v${this.version}/${this.routePath}`
+        return `/v${this.version}${this.routePath}`
     }
 
-    // get the express router for this api
+    /**
+     * Adds all routes that are enabled to a Router instance
+     * @returns The router instance
+     */
     async getRouter() {
         await this.testRoutes();
 
         const router = express.Router();
 
-        this.routes.forEach(route => {
-            if (route.enabled) {
-                switch (route.method) {
-                    case 'GET':
-                        router.get(route.path, route.handler);
-                        break;
-                    case 'POST':
-                        router.post(route.path, route.handler);
-                        break;
-                }
+        this.routes.filter(route => route.enabled).forEach(route => {
+            switch (route.method) {
+                case 'GET':
+                    router.get(route.path, route.handler);
+                    break;
+                case 'POST':
+                    router.post(route.path, route.handler);
+                    break;
+                case 'PUT':
+                    router.put(route.path, route.handler);
+                    break;
+                case 'DELETE':
+                    router.delete(route.path, route.handler);
+                    break
+                case 'PATCH':
+                    router.patch(route.path, route.handler);
+                    break;
+                case 'OPTIONS':
+                    router.options(route.path, route.handler);
+                    break
+                case 'HEAD':
+                    router.head(route.path, route.handler);
+                    break
             }
         });
 
-        this.middleware.forEach(mw => { router.use(mw()) })
+        this.middleware.forEach(middleware => router.use(middleware));
 
         return router;
     }
 
-    // run route tests
+    /**
+     * Runs all route tests
+     */
     testRoutes() {
-        this.routes.forEach(route => { route.test(); });
+        this.routes.forEach(route => route.test());
     }
 
-    // get a list of enable route classes
+    /**
+     * Tests and gets all enabled routes
+     * @returns An array of all enabled routes
+     */
     async getEnabledRoutes() {
         await this.testRoutes()
 
-        let routes = [];
-
-        this.routes.forEach(route => {
-            if (route.enabled)
-                routes.push(route);
-        })
-
-        return routes;
+        return this.routes.filter(route => route.enabled);
     }
-
 }
-
-module.exports = API;

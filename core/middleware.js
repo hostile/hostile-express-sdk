@@ -1,13 +1,19 @@
-// middleware class
-class Middleware {
+module.exports = class Middleware {
 
     constructor() {}
 
-    // abstract standardize func
-    use() {}
+    /**
+     * Abstract usage method
+     */
+    use(req, res, next) {
+        throw new Error('Middleware function not overridden!');
+    }
 
-    setUse(fn) { this.use = fn; }
-
+    /**
+     * Sets the use function
+     * @param fn The use function
+     */
+    setUse(fn) {
+        this.use = fn;
+    }
 }
-
-module.exports = Middleware
