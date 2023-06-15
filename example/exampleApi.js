@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { API } = require('../index');
 const express = require('express');
 
@@ -8,8 +10,8 @@ const express = require('express');
 const api = new API(1, '/osint');
 const app = express();
 
-const host = 127.0.0.1;
-const port = 3000;
+const host = process.env.HOST || '127.0.0.1';
+const port = process.env.PORT || 3000;
 
 /*
 * Add existing route to our API instance and register router
