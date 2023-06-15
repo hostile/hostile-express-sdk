@@ -27,7 +27,7 @@ class API {
 
     // get the express router for this api
     async getRouter() {
-        // await this.testRoutes();
+        await this.testRoutes();
 
         const router = express.Router();
 
