@@ -1,8 +1,8 @@
-const {API, Parameter, Route, Standardization} = require("../lib");
+const {API, Parameter, Route, Standardization} = require("../index");
 const express = require("express");
 
 // create api service
-const aOSINT = new API(1, '/osint', []);
+const aOSINT = new API(1, '/osint');
 
 // common use parameter
 pUsername = new Parameter('username', String);
