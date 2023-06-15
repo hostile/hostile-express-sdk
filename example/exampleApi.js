@@ -12,7 +12,7 @@ const host = 127.0.0.1;
 const port = 3000;
 
 /*
-* Add existing route to our api instance and register router
+* Add existing route to our API instance and register router
 */
 api.addRoute(require('./cashAppHandler'));
 
