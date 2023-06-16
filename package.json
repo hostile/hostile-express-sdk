@@ -1,5 +1,5 @@
 {
-  "name": "api-core",
+  "name": "hostile-api-core",
   "version": "1.0.0",
   "scripts": {
     "lint": "eslint .",
