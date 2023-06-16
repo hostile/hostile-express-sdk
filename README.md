@@ -1,7 +1,7 @@
 # API Core
 
 The core Node module (powered by Express) used in Hostile's v2 API, which simplifies 
-management of routing, middleware, required parameters in requests,
+management of routing, middleware, smart ratelimiting, required parameters in requests,
 required elements in POST data, and more.
 
 ### Authors & Licensing
@@ -28,7 +28,7 @@ const api = new require('api-core').API(1, 'example', []);
 /**
  * Returns the path of the API (for example, /v1/example)
  */
-const path = api.getPath();
+const path = api.path;
 
 /**
  * Returns the express router of the API, which will run
@@ -93,7 +93,7 @@ middleware.setUse((req, res, next) => {
 });
 ```
   
-### Implmentation - Parameter  
+### Implementation - Parameter  
   
 ```javascript
 
@@ -101,9 +101,9 @@ middleware.setUse((req, res, next) => {
 * Create a route parameter object
 */
 const param = new Parameter()
-                    .setName('username')
-                    .setRequired(true)
-                    .setValidationFunction((username) => standardizeUsername(username));
+    .setName('username')
+    .setRequired(true)
+    .setValidationFunction((username) => standardizeUsername(username));
 
 /*
 * Add that object to array of route params
@@ -111,10 +111,10 @@ const param = new Parameter()
 route.setParameters([param]);
 ``` 
   
-### Example
+### Complete Example
 
 ```javascript
-const { Middleware, API, Route } = require('api-core');
+const { Middleware, API, Route, MemoryCache, RateLimitDescriptor } = require('api-core');
 const express = require('express');
 
 const std = new Middleware();
@@ -125,24 +125,30 @@ std.setUse((req, res, next) => {
     next();
 });
 
-const api = new API(1, 'example', [std]);
+const api = new API(1, 'example', [std])
+    .setCache(new MemoryCache()
+        .setElementLifetime(1000 * 60 * 60)
+        .setPurgeTimePeriod(5000)
+    );
 
-const route = new Route('GET', '/example', [], (req, res) => {
+api.addRoute(new Route('GET', '/example', [], (req, res) => {
     res.send('Hello World!');
-});
+}).setRateLimitHandler(new RateLimitDescriptor()
+    .setPeriod('5/minute')
+));
 
-api.addRoute(route);
-
-async init() {
+const init = async () => {
     // callback
     api.getRouter().then((router) => {
-        app.use(api.getPath(), router);
+        app.use(api.path, router);
     })
     
     // await
     const apiRouter = await api.getRouter();
-    app.use(api.getPath, apiRouter);
+    app.use(api.path, apiRouter);
 }
 
-init();
+init().then(() => {
+    console.log('Initialized!');
+})
 ```

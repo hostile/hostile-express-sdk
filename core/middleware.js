@@ -5,7 +5,7 @@ module.exports = class Middleware {
     /**
      * Abstract usage method
      */
-    use(req, res, next) {
+    async use(req, res, next) {
         throw new Error('Middleware function not overridden!');
     }
 
