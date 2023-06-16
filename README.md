@@ -1,7 +1,7 @@
 # API Core
 
-The core Node module (powered by Express) used in Hostile's v2 API, which simplifies 
-management of routing, middleware, smart ratelimiting, required parameters in requests,
+The core Node module (powered by Express) used in Hostile's v2 API, which simplifies
+management of routing, middleware, smart rate limiting, required parameters in requests,
 required elements in POST data, and more.
 
 ### Authors & Licensing
@@ -15,6 +15,11 @@ of warranty or guarantee.
 
 In order to contribute to this project, feel free to fork it and make a pull
 request with your changes. Please follow the provided pull request format.
+
+### Installation
+
+Installing the Hostile API core into your preexisting Node.js project is simple. Ensure
+you have Express installed, then execute `npm install hostile-api-core`.
 
 ### Implementation - API
 
@@ -64,8 +69,8 @@ app.use(path, router);
  * with "Hello World!"
  */
 const route = new Route('get', '/example', [], (req, res) => {
-    res.send('Hello World!');
-});
+        res.send('Hello World!');
+    });
 
 /**
  * Sets the route's test function, which is used to simply
@@ -80,21 +85,21 @@ route.setTest(() => {
 
 ```javascript
 /**
-* Create a new middleware object
-*/
+ * Create a new middleware object
+ */
 const middleware = new Middleware();
 
 /**
-* Define its handler
-*/
+ * Define its handler
+ */
 middleware.setUse((req, res, next) => {
     console.log('Hello World!');
     next();
 });
 ```
-  
-### Implementation - Parameter  
-  
+
+### Implementation - Parameter
+
 ```javascript
 
 /*
@@ -110,7 +115,7 @@ const param = new Parameter()
 */
 route.setParameters([param]);
 ``` 
-  
+
 ### Complete Example
 
 ```javascript
@@ -142,7 +147,7 @@ const init = async () => {
     api.getRouter().then((router) => {
         app.use(api.path, router);
     })
-    
+
     // await
     const apiRouter = await api.getRouter();
     app.use(api.path, apiRouter);
