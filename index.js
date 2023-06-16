@@ -12,15 +12,15 @@ const MemoryCache = require('./core/cache/inMemoryCache');
 const RedisCache = require('./core/cache/redisCache');
 
 module.exports = {
+    RateLimitDescriptor,
+    
     Middleware,
     Route,
     API,
     Standardization,
     Parameter,
 
-    RateLimitDescriptor,
-
+    Cache,
     MemoryCache,
-    RedisCache,
-    Cache
+    RedisCache
 }

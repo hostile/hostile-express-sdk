@@ -1,5 +1,5 @@
 const { createClient } = require('redis');
-const Cache = require('./cache');
+const { Cache } = require('./cache');
 
 module.exports = class RedisCache extends Cache {
 
@@ -11,23 +11,28 @@ module.exports = class RedisCache extends Cache {
         });
     }
 
+    /**
+     * Connects to the Redis instance
+     */
     async connect() {
         await this.client.connect();
     }
 
-    get(key) {
-        throw new Error('Get cannot be called synchronously using Redis cache!');
+    /**
+     * Returns the value of the key from the Redis cache
+     * @param key The key to check
+     * @returns The value from the Redis cache
+     */
+    async get(key) {
+        return await this.client.GET(key);
     }
 
-    set(key, value) {
-        throw new Error('Set cannot be called synchronously using Redis cache!');
-    }
-
-    async setAsync(key, value) {
+    /**
+     * Updates the value of the key in the Redis cache
+     * @param key The key to set the value of
+     * @param value The value to be set
+     */
+    async set(key, value) {
         await this.client.set(key, value);
-    }
-
-    async getAsync(args) {
-        return await this.client.GET(args);
     }
 }

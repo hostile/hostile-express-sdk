@@ -1,5 +1,6 @@
 const express = require('express');
-const { RateLimitDescriptor } = require('../index');
+const cache = require('./cache/cache');
+const RateLimitDescriptor = require('../core/ratelimit/rateLimitDescriptor');
 
 module.exports = class API {
 
@@ -7,7 +8,6 @@ module.exports = class API {
     middleware = [];
     rateLimitPolicy = new RateLimitDescriptor()
         .setBypass(() => true);
-    cache
 
     constructor(version, routePath) {
         this.version = version;
@@ -40,11 +40,11 @@ module.exports = class API {
 
     /**
      * Sets the cache to the provided instance
-     * @param cache The cache to set the instance to
+     * @param cacheInstance The cache to set the instance to
      * @returns The current API instance
      */
-    setCache(cache) {
-        this.cache = cache;
+    setCache(cacheInstance) {
+        cache.cache = cacheInstance;
         return this;
     }
 
@@ -109,6 +109,7 @@ module.exports = class API {
      */
     async getEnabledRoutes() {
         await this.testRoutes();
+
         return this.routes.filter(route => route.enabled);
     }
 }

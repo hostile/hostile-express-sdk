@@ -9,8 +9,9 @@ const express = require('express');
  */
 const api = new API(1, '/osint')
     .setCache(new MemoryCache()
-        .setCacheDuration(1000 * 60 * 60)
-        .setPurgeTimePeriod(5000));
+        .setElementLifetime(1000 * 60 * 60)
+        .setPurgeTimePeriod(5000)
+    );
 
 const app = express();
 

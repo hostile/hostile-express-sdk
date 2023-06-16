@@ -1,5 +1,5 @@
-const { Route, Parameter } = require('../index');
-const { standardizeUsername } = require("../core/parameter/standardization");
+const { Route, Parameter, RateLimitDescriptor} = require('../index');
+const { standardizeUsername } = require('../core/parameter/standardization');
 
 const axios = require('axios');
 
@@ -9,8 +9,9 @@ module.exports = new Route('GET', '/cashapp')
             .setName('username')
             .setRequired(true)
             .setValidationFunction((username) => standardizeUsername(username))
-    ])
-    .setHandler(async (req, res) => {
+    ]).setRateLimitHandler(new RateLimitDescriptor()
+        .setPeriod('1/minute')
+    ).setHandler(async (req, res) => {
         const username = req.queryParams.username;
         const response = await axios.get(`https://cash.app/$${username}`);
 

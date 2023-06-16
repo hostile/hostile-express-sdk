@@ -1,12 +1,17 @@
-module.exports = class RateLimitCache {
+module.exports = {
+    Cache: class RateLimitCache {
 
-    connect() {}
+        connect() {
+        }
 
-    set(key, value) {
-        throw new Error(`Set function not overridden! ${key}:${value}`);
-    }
+        async set(key, value) {
+            throw new Error(`Set function not overridden! ${key}:${value}`);
+        }
 
-    get(key) {
-        throw new Error(`Get function not overridden! ${key}`);
-    }
+        async get(key) {
+            throw new Error(`Get function not overridden! ${key}`);
+        }
+    },
+
+    cache: undefined
 }

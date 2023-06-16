@@ -1,8 +1,9 @@
 const periods = require('./rateLimitPeriod');
+const cache = require('../cache/cache');
 
 module.exports = class RateLimitDescriptor {
 
-    constructor() {}
+    response = {}
 
     rateLimitIdentifier = (req) => {
         return req.header('x-forwarded-for') || req.socket.remoteAddress;
@@ -12,6 +13,8 @@ module.exports = class RateLimitDescriptor {
         return false;
     }
 
+    constructor() {}
+
     /**
      * Sets the time period of the rate limiting descriptor
      * @param period The period to be used to determine if a request is valid
@@ -20,20 +23,25 @@ module.exports = class RateLimitDescriptor {
     setPeriod(period) {
         const parts = period.split('/');
 
-        const duration = Number(parts[0]);
+        const quantity = Number(parts[0]);
         const timePeriod = parts[1].toLowerCase();
 
-        if (isNaN(duration)) {
-            throw new Error('Invalid duration specified!');
+        if (isNaN(quantity)) {
+            throw new Error('Invalid quantity specified!');
         }
 
         if (!(timePeriod in periods)) {
             throw new Error('Invalid time period specified!');
         }
 
-        this.duration = duration;
-        this.timePeriod = timePeriod;
+        this.quantity = quantity;
+        this.timePeriod = periods[timePeriod];
 
+        return this;
+    }
+
+    setResponse(response) {
+        this.response = response;
         return this;
     }
 
@@ -55,5 +63,43 @@ module.exports = class RateLimitDescriptor {
     setBypass(bypassFunction) {
         this.bypassFunction = bypassFunction;
         return this;
+    }
+
+    /**
+     * Handles the route's rate limiting
+     * @param req The request instance
+     * @returns If the handler should continue with the request
+     */
+    async handle(req) {
+        if (this.bypassFunction(req)) {
+            return true;
+        }
+
+        const identifier = this.rateLimitIdentifier(req);
+        const key = identifier + '-rate-limit';
+
+        const timePeriod = this.timePeriod;
+        const quantity = this.quantity;
+
+        let cachedData = await cache.cache.get(key);
+
+        if (cachedData === undefined) {
+            cachedData = [Date.now()];
+            await cache.cache.set(key, cachedData);
+            return true;
+        }
+
+        const time = Date.now();
+
+        cachedData = cachedData.filter(entry => time - entry <= timePeriod);
+        cachedData.push(time);
+
+        if (cachedData.length > quantity) {
+            await cache.cache.set(key, cachedData);
+            return false;
+        }
+
+        await cache.cache.set(key, cachedData);
+        return true;
     }
 }
