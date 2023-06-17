@@ -3,7 +3,10 @@ const cache = require('../cache/cache');
 
 module.exports = class RateLimitDescriptor {
 
-    response = {}
+    response = {
+        status: 'failed',
+        message: 'You are being rate limited! Try slowing down your requests.'
+    }
 
     rateLimitIdentifier = (req) => {
         return req.header('x-forwarded-for') || req.socket.remoteAddress;

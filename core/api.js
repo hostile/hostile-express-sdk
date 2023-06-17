@@ -49,14 +49,6 @@ module.exports = class API {
     }
 
     /**
-     *
-     * @param rateLimitDescriptor
-     */
-    setRateLimitDescriptor(rateLimitDescriptor) {
-        this.rateLimitPolicy = rateLimitDescriptor;
-    }
-
-    /**
      * Adds all routes that are enabled to a Router instance
      * @returns The router instance
      */
