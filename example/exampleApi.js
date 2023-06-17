@@ -23,15 +23,15 @@ const port = process.env.PORT || 3000;
 */
 api.addRoute(require('./cashAppHandler'));
 
-api.getRouter().then((router) => {
-    app.use(api.path, router);
+(async () => {
+    await api.registerRoutes(app);
+    api.registerMiddleware(app);
+})().then(() => {
+    /**
+     * Listens for connections on the provided hostname and port
+     */
+
+    app.listen(port, host, () => {
+        console.log(`Server started on http://${host}:${port}!`);
+    });
 })
-
-api.registerMiddleware(app);
-
-/**
- * Listens for connections on the provided hostname and port
- */
-app.listen(port, host, () => {
-    console.log(`Server started on http://${host}:${port}!`);
-});

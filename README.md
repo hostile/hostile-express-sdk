@@ -43,22 +43,17 @@ const path = api.path;
 const router = api.getRouter();
 
 /**
- * Returns all enabled routes, which also runs all
- * integrated tests
+ * Register all routes and middleware, then log
+ * all registered routes
  */
-const enabled = api.getEnabledRoutes();
+(async () => {
+    await api.registerRoutes(app);
+    api.registerMiddleware(app);
 
-/**
- * Demonstrates logging all enabled routes
- */
-enabled.forEach(route => {
-    console.log(route.getMethod() + ' ' + route.getPath());
+    api.routes.forEach(route => {
+        console.log(`${route.method} - ${route.path}`);
+    })
 });
-
-/**
- * Pass the router instance to Express
- */
-app.use(path, router);
 ```
 
 ### Implementation - Routes
@@ -69,15 +64,7 @@ app.use(path, router);
  * with "Hello World!"
  */
 const route = new Route('get', '/example', [], (req, res) => {
-        res.send('Hello World!');
-    });
-
-/**
- * Sets the route's test function, which is used to simply
- * test for functionality
- */
-route.setTest(() => {
-    return 1 + 1 == 2;
+    res.send('Hello World!');
 });
 ```
 
@@ -96,6 +83,24 @@ middleware.setUse((req, res, next) => {
     console.log('Hello World!');
     next();
 });
+
+/**
+ * Alternatively, you can do the following
+ */
+module.exports = class ExampleMiddleware extends Middleware {
+    
+    async use(req, res, next) {
+        console.log(`Path: ${req.path}`);
+        
+        /*
+        Express requires you to call the next() function 
+        in middleware to let it know that the middleware 
+        ran successfully and it should continue its handling 
+        of the request.
+         */
+        next();
+    }
+}
 ```
 
 ### Implementation - Parameter
@@ -125,6 +130,9 @@ const express = require('express');
 const std = new Middleware();
 const app = express();
 
+const host = process.env.HOST || '127.0.0.1';
+const port = process.env.PORT || 3000;
+
 std.setUse((req, res, next) => {
     console.log('Hello World!');
     next();
@@ -140,20 +148,27 @@ api.addRoute(new Route('GET', '/example', [], (req, res) => {
     res.send('Hello World!');
 }).setRateLimitHandler(new RateLimitDescriptor()
     .setPeriod('5/minute')
+    .setResponse({
+        status: 'failed',
+        message: 'You are being rate limited!'
+    })
 ));
 
+/*
+Register all routes and middleware
+ */
 const init = async () => {
-    // callback
-    api.getRouter().then((router) => {
-        app.use(api.path, router);
-    })
-
-    // await
-    const apiRouter = await api.getRouter();
-    app.use(api.path, apiRouter);
+    await api.registerRoutes(app);
+    api.registerMiddleware(app);
 }
 
+/*
+Call the init function, then listen for connections
+on the port and host defined by the environment variables.
+ */
 init().then(() => {
-    console.log('Initialized!');
+    app.listen(port, host, () => {
+        console.log(`Server started on http://${host}:${port}!`);
+    });
 })
 ```

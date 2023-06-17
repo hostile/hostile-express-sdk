@@ -60,13 +60,13 @@ module.exports = class Parameter {
      * @returns If the parameter is valid
      */
     test(req, args) {
-        const inQuery = this.name in args;
+        const inArgs = this.name in args;
 
-        if (!(this.name in args) && this.required) {
+        if (!inArgs && this.required) {
             return false;
         }
 
-        if (inQuery) {
+        if (inArgs) {
             let value = args[this.name];
 
             if (this.mappingFunction !== undefined) {

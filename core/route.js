@@ -1,6 +1,5 @@
 module.exports = class Route {
 
-    enabled = true;
     parameters = [];
     postBodyFields = [];
     rateLimitHandler;
@@ -18,16 +17,6 @@ module.exports = class Route {
      */
     test() {
         return true;
-    }
-
-    /**
-     * Sets the test function
-     * @param fn The function to be called when running tests
-     * @returns The current Route instance
-     */
-    setTest(fn) {
-        this.test = fn;
-        return this;
     }
 
     /**
@@ -80,7 +69,7 @@ module.exports = class Route {
                     if (!parameter.test(req, query)) {
                         res.status(400).json({
                             status: 'failed',
-                            message: `Missing query parameter ${parameter.getName()}`
+                            message: `Missing query parameter ${parameter.name}`
                         });
                         return;
                     }
@@ -90,7 +79,7 @@ module.exports = class Route {
                     if (!field.test(req, body)) {
                         res.status(400).json({
                             status: 'failed',
-                            message: `Missing post body field ${field.getName()}`
+                            message: `Missing post body field ${field.name}`
                         });
                         return;
                     }
