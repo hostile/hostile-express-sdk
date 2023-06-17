@@ -19,7 +19,7 @@ request with your changes. Please follow the provided pull request format.
 ### Installation
 
 Installing the Hostile API core into your preexisting Node.js project is simple. Ensure
-you have Express installed, then execute `npm install hostile-api-core`.
+you have Express installed, then execute `npm install hostile-core-package`.
 
 ### Implementation - API
 
