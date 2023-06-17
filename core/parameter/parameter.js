@@ -36,6 +36,14 @@ module.exports = class Parameter {
     }
 
     /**
+     * Returns the name of the parameter
+     * @returns The name of the parameter
+     */
+    getName() {
+        return this.name;
+    }
+
+    /**
      * Sets if the parameter should be required
      * @param required Whether the parameter should be required
      * @returns The current parameter instance
