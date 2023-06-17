@@ -1,6 +1,5 @@
 const express = require('express');
 const cache = require('./cache/cache');
-const RateLimitDescriptor = require('../core/ratelimit/rateLimitDescriptor');
 
 module.exports = class API {
 
@@ -52,11 +51,9 @@ module.exports = class API {
      * @returns The router instance
      */
     async getRouter() {
-        await this.testRoutes();
-
         const router = express.Router();
 
-        this.routes.filter(route => route.enabled).forEach(route => {
+        this.routes.forEach(route => {
             switch (route.method.toUpperCase()) {
                 case 'GET':
                     router.get(route.path, route.handler);
@@ -85,28 +82,15 @@ module.exports = class API {
         return router;
     }
 
-    /**
-     * Runs all route tests
-     */
-    testRoutes() {
-        this.routes.forEach(route => route.test());
+    async registerRoutes(app) {
+        app.use(this.path, await this.getRouter());
     }
 
     /**
-     * Registers the API's middleware
+     * Registers the API middleware
      * @param app The app instance
      */
     registerMiddleware(app) {
         this.middleware.forEach(middleware => app.use('/', middleware.use));
-    }
-
-    /**
-     * Tests and gets all enabled routes
-     * @returns An array of all enabled routes
-     */
-    async getEnabledRoutes() {
-        await this.testRoutes();
-
-        return this.routes.filter(route => route.enabled);
     }
 }
