@@ -6,8 +6,6 @@ module.exports = class API {
 
     routes = [];
     middleware = [];
-    rateLimitPolicy = new RateLimitDescriptor()
-        .setBypass(() => true);
 
     constructor(version, routePath, middleware) {
         this.version = version;
@@ -84,8 +82,6 @@ module.exports = class API {
             }
         });
 
-        this.middleware.forEach(middleware => router.use('/', middleware.use));
-
         return router;
     }
 
@@ -94,6 +90,14 @@ module.exports = class API {
      */
     testRoutes() {
         this.routes.forEach(route => route.test());
+    }
+
+    /**
+     * Registers the API's middleware
+     * @param app The app instance
+     */
+    registerMiddleware(app) {
+        this.middleware.forEach(middleware => app.use('/', middleware.use));
     }
 
     /**

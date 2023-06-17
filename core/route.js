@@ -70,7 +70,6 @@ module.exports = class Route {
             const value = await (!this.rateLimitHandler || this.rateLimitHandler.handle(req));
 
             if (value) {
-                console.log('a');
                 const query = req.query;
                 const body = req.body;
 

@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { API, MemoryCache} = require('../index');
+const { API, MemoryCache } = require('../index');
 const express = require('express');
 
 /**
@@ -26,6 +26,8 @@ api.addRoute(require('./cashAppHandler'));
 api.getRouter().then((router) => {
     app.use(api.path, router);
 })
+
+api.registerMiddleware(app);
 
 /**
  * Listens for connections on the provided hostname and port
