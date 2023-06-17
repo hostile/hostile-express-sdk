@@ -9,9 +9,10 @@ module.exports = class API {
     rateLimitPolicy = new RateLimitDescriptor()
         .setBypass(() => true);
 
-    constructor(version, routePath) {
+    constructor(version, routePath, middleware) {
         this.version = version;
         this.routePath = routePath;
+        this.middleware = middleware;
     }
 
     /**
@@ -83,7 +84,7 @@ module.exports = class API {
             }
         });
 
-        this.middleware.forEach(middleware => router.use(middleware));
+        this.middleware.forEach(middleware => router.use('/', middleware.use));
 
         return router;
     }

@@ -1,13 +1,13 @@
 require('dotenv').config();
 
-const { API, MemoryCache } = require('../index');
+const { API, MemoryCache} = require('../index');
 const express = require('express');
 
 /**
  * Initializes the API instance and app instance
  * Define host and port constants
  */
-const api = new API(1, '/osint')
+const api = new API(1, '/osint', [])
     .setCache(new MemoryCache()
         .setElementLifetime(1000 * 60 * 60)
         .setPurgeTimePeriod(5000)
