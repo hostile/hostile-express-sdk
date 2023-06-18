@@ -158,8 +158,8 @@ api.addRoute(new Route('GET', '/example', [], (req, res) => {
 Register all routes and middleware
  */
 const init = async () => {
-    await api.registerRoutes(app);
     api.registerMiddleware(app);
+    await api.registerRoutes(app);
 }
 
 /*

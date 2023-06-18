@@ -24,8 +24,8 @@ const port = process.env.PORT || 3000;
 api.addRoute(require('./cashAppHandler'));
 
 (async () => {
-    await api.registerRoutes(app);
     api.registerMiddleware(app);
+    await api.registerRoutes(app);
 })().then(() => {
     /**
      * Listens for connections on the provided hostname and port

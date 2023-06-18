@@ -91,6 +91,6 @@ module.exports = class API {
      * @param app The app instance
      */
     registerMiddleware(app) {
-        this.middleware.forEach(middleware => app.use('/', middleware.use));
+        this.middleware.forEach(middleware => app.use(this.path, middleware.use));
     }
 }
