@@ -2,6 +2,7 @@ module.exports = class Parameter {
 
     validationFunction;
     mappingFunction;
+    malformedMessage;
     required = false;
     name;
 
@@ -22,6 +23,16 @@ module.exports = class Parameter {
      */
     setMappingFunction(mappingFunction) {
         this.mappingFunction = mappingFunction;
+        return this;
+    }
+
+    /**
+     * Sets the malformed message response
+     * @param malformedMessage The response to send
+     * @returns The current Parameter instance
+     */
+    setMalformedMessage(malformedMessage) {
+        this.malformedMessage = malformedMessage;
         return this;
     }
 
@@ -57,13 +68,14 @@ module.exports = class Parameter {
      * Tests if the parameter provided is valid
      * @param req The request object
      * @param args The query or post body
+     * @param params The parameters to add the parsed field to
      * @returns If the parameter is valid
      */
-    test(req, args) {
+    test(req, args, params) {
         const inArgs = this.name in args;
 
         if (!inArgs && this.required) {
-            return false;
+            return `Field ${this.name} not present!`;
         }
 
         if (inArgs) {
@@ -74,10 +86,10 @@ module.exports = class Parameter {
             }
 
             if (this.validationFunction !== undefined && !this.validationFunction(value)) {
-                return false;
+                return this.malformedMessage;
             }
 
-            req.queryParams[this.name] = value;
+            params[this.name] = value;
         }
 
         return true;

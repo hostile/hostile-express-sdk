@@ -67,20 +67,24 @@ module.exports = class Route {
                 req.postBody = {};
 
                 for (const parameter of this.parameters) {
-                    if (!parameter.test(req, query)) {
+                    const result = parameter.test(req, query, req.queryParams);
+
+                    if (typeof result === 'string') {
                         res.status(400).json({
                             status: 'failed',
-                            message: `Missing query parameter ${parameter.name}`
+                            message: result
                         });
                         return;
                     }
                 }
 
                 for (const field of this.postBodyFields) {
-                    if (!field.test(req, body)) {
+                    const result = field.test(req, query, req.postBody);
+
+                    if (typeof result === 'string') {
                         res.status(400).json({
                             status: 'failed',
-                            message: `Missing post body field ${field.name}`
+                            message: result
                         });
                         return;
                     }

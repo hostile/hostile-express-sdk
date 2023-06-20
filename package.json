@@ -1,6 +1,6 @@
 {
   "name": "hostile-core-package",
-  "version": "1.0.1-hotfix-1",
+  "version": "1.0.1-hotfix-2",
   "scripts": {
     "lint": "eslint .",
     "start": "nodemon example/exampleApi.js"

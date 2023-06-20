@@ -14,7 +14,17 @@ module.exports = new Route('GET', '/cashapp')
         createRateLimit('5/minute')
     ).setHandler(async (req, res) => {
         const username = req.queryParams.username;
-        const response = await axios.get(`https://cash.app/$${username}`);
+        const response = await axios.get(`https://cash.app/$${username}`, {
+            validateStatus: false
+        });
+
+        if (response.status !== 200) {
+            res.status(400).json({
+                status: 'failed',
+                message: 'No user found!'
+            });
+            return
+        }
 
         res.status(200).json({
             status: 'success',
