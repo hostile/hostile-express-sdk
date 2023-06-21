@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const { API, MemoryCache } = require('../index');
+
 const express = require('express');
 
 /**
@@ -14,6 +15,7 @@ const api = new API(1, '/osint', [])
     );
 
 const app = express();
+app.use(express.json());
 
 const host = process.env.HOST || '127.0.0.1';
 const port = process.env.PORT || 3000;
@@ -22,6 +24,7 @@ const port = process.env.PORT || 3000;
 * Add existing route to our API instance and register router
 */
 api.addRoute(require('./cashAppHandler'));
+api.addRoute(require('./examplePostTest'));
 
 (async () => {
     api.registerMiddleware(app);

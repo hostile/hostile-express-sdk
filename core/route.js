@@ -79,7 +79,7 @@ module.exports = class Route {
                 }
 
                 for (const field of this.postBodyFields) {
-                    const result = field.test(req, query, req.postBody);
+                    const result = field.test(req, body, req.postBody);
 
                     if (typeof result === 'string') {
                         res.status(400).json({
