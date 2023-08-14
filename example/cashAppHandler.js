@@ -5,6 +5,12 @@ const axios = require('axios');
 const createRateLimit = require('./rateLimit');
 
 module.exports = new Route('GET', '/cashapp')
+    .setSandboxData(200, {
+        status: 'success',
+        data: {
+            name: 'John Smith'
+        }
+    })
     .setParameters([
         new Parameter()
             .setName('username')
@@ -19,15 +25,16 @@ module.exports = new Route('GET', '/cashapp')
         });
 
         if (response.status !== 200) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: 'failed',
                 message: 'No user found!'
             });
-            return
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             status: 'success',
-            data: JSON.parse(response.data.split('profile: ')[1].split('\n')[0])
+            data: {
+                name: response.data.split('display_name":"')[1].split('"')[0].replace('"', '')
+            }
         });
     });

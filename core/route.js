@@ -3,6 +3,7 @@ module.exports = class Route {
     parameters = [];
     postBodyFields = [];
     rateLimitHandler;
+    sandBoxResponse;
 
     handler;
 
@@ -49,6 +50,14 @@ module.exports = class Route {
         return this;
     }
 
+    setSandboxData(statusCode, data) {
+        this.sandBoxResponse = {
+            status: statusCode,
+            data: data
+        }
+        return this;
+    }
+
     /**
      * Sets the route handling function
      * @param handler The handling function
@@ -60,6 +69,10 @@ module.exports = class Route {
             const value = await (!this.rateLimitHandler || this.rateLimitHandler.handle(req));
 
             if (value) {
+                if (req.query.sandbox && this.sandBoxResponse) {
+                    return res.status(this.sandBoxResponse.status).json(this.sandBoxResponse.data);
+                }
+
                 const query = req.query;
                 const body = req.body;
 
@@ -70,11 +83,10 @@ module.exports = class Route {
                     const result = parameter.test(req, query, req.queryParams);
 
                     if (typeof result === 'string') {
-                        res.status(400).json({
+                        return res.status(400).json({
                             status: 'failed',
                             message: result
                         });
-                        return;
                     }
                 }
 
@@ -82,11 +94,10 @@ module.exports = class Route {
                     const result = field.test(req, body, req.postBody);
 
                     if (typeof result === 'string') {
-                        res.status(400).json({
+                        return res.status(400).json({
                             status: 'failed',
                             message: result
                         });
-                        return;
                     }
                 }
 
