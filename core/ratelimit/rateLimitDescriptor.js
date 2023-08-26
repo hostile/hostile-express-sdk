@@ -87,21 +87,22 @@ module.exports = class RateLimitDescriptor {
         let cachedData = await cache.cache.get(key);
 
         if (!cachedData) {
-            await cache.cache.set(key, [Date.now()]);
+            await cache.cache.set(key, JSON.stringify([Date.now()]));
             return true;
         }
 
         const time = Date.now();
 
+        cachedData = JSON.parse(cachedData);
         cachedData = cachedData.filter(entry => time - entry <= timePeriod);
         cachedData.push(time);
 
         if (cachedData.length > quantity) {
-            await cache.cache.set(key, cachedData);
+            await cache.cache.set(key, JSON.stringify(cachedData));
             return false;
         }
 
-        await cache.cache.set(key, cachedData);
+        await cache.cache.set(key, JSON.stringify(cachedData));
         return true;
     }
 }

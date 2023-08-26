@@ -65,7 +65,11 @@ module.exports = class Route {
      */
     setHandler(handler) {
         this.handler = async (req, res) => {
-            // In the future, this should be its own middleware, instead of being tied to the handler
+            /*
+
+            In the future, this should be its own middleware, instead of being tied to the handler.
+
+             */
             const value = await (!this.rateLimitHandler || this.rateLimitHandler.handle(req));
 
             if (value) {
