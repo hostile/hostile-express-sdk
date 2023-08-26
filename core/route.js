@@ -101,11 +101,12 @@ module.exports = class Route {
                     }
                 }
 
-                handler(req, res);
-            } else {
-                res.status(429).json(this.rateLimitHandler.response);
+                return handler(req, res);
             }
+
+            return res.status(429).json(this.rateLimitHandler.response);
         }
+
         return this;
     }
 }

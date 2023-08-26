@@ -86,9 +86,8 @@ module.exports = class RateLimitDescriptor {
 
         let cachedData = await cache.cache.get(key);
 
-        if (cachedData === undefined) {
-            cachedData = [Date.now()];
-            await cache.cache.set(key, cachedData);
+        if (!cachedData) {
+            await cache.cache.set(key, [Date.now()]);
             return true;
         }
 
