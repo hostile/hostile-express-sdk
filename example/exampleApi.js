@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { API, MemoryCache } = require('../index');
+const { API, RedisCache } = require('../index');
 
 const express = require('express');
 
@@ -9,10 +9,14 @@ const express = require('express');
  * Define host and port constants
  */
 const api = new API(1, '/osint', [])
-    .setCache(new MemoryCache()
-        .setElementLifetime(1000 * 60 * 60)
-        .setPurgeTimePeriod(5000)
-    );
+    .setCache(new RedisCache({
+        socket: {
+            host: '127.0.0.1',
+            port: 6379
+        },
+        username: '',
+        password: ''
+    }).setElementLifetime(60 * 60));
 
 const app = express();
 app.use(express.json());
