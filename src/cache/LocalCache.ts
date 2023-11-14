@@ -1,18 +1,22 @@
-const { Cache } = require('./cache');
+import { Cache } from './Cache';
 
-module.exports = class MemoryCache extends Cache {
+interface CacheEntry<T> {
+    value: T;
+    lastAccessTime: Number;
+}
 
-    values = {};
-    lastPurge = Date.now();
-    purgeTimePeriod = 5000;
-    lifetime = 30000;
+export class LocalCache<V> extends Cache<V> {
+    private values: { [key: string]: CacheEntry<V> } = {};
+    private lastPurge: Number = Date.now();
+    private purgeTimePeriod: Number = 5000;
+    private lifetime: Number = 30000;
 
     /**
      * Sets the purge cooldown
      * @param purgeTimePeriod The cooldown duration
      * @returns The current MemoryCache instance
      */
-    setPurgeTimePeriod(purgeTimePeriod) {
+    public setPurgeTimePeriod(purgeTimePeriod: Number): LocalCache<V> {
         this.purgeTimePeriod = purgeTimePeriod;
         return this;
     }
@@ -22,7 +26,7 @@ module.exports = class MemoryCache extends Cache {
      * @param lifetime The lifetime of cache elements
      * @returns The current MemoryCache instance
      */
-    setElementLifetime(lifetime) {
+    public setElementLifetime(lifetime: Number): LocalCache<V> {
         this.lifetime = lifetime;
         return this;
     }
@@ -32,16 +36,12 @@ module.exports = class MemoryCache extends Cache {
      * @param key The key to return the value of
      * @returns The cached value
      */
-    async get(key) {
+    public async get(key: string): Promise<V | undefined> {
         const value = this.values[key];
 
         this.clear();
 
-        if (!value) {
-            return undefined;
-        }
-
-        return value.value;
+        return value ? value.value : undefined;
     }
 
     /**
@@ -49,11 +49,10 @@ module.exports = class MemoryCache extends Cache {
      * @param key The key to update the value of
      * @param value The value to be set
      */
-    async set(key, value) {
+    public async set(key: string, value: V): Promise<void> {
         this.values[key] = {
-            key: key,
             value: value,
-            lastAccessTime: Date.now()
+            lastAccessTime: Date.now(),
         };
 
         this.clear();
@@ -62,15 +61,21 @@ module.exports = class MemoryCache extends Cache {
     /**
      * Clears the expired values from the cache
      */
-    clear() {
-        if (Date.now() - this.lastPurge <= this.purgeTimePeriod) {
+    public clear(): void {
+        if (
+            Date.now() - (this.lastPurge as number) <=
+            (this.purgeTimePeriod as number)
+        ) {
             return;
         }
 
         for (const key in this.values) {
             const entry = this.values[key];
 
-            if (Date.now() - entry.lastAccessTime >= this.cacheDuration) {
+            if (
+                Date.now() - (entry.lastAccessTime as number) >=
+                (this.lifetime as number)
+            ) {
                 delete this.values[key];
             }
         }

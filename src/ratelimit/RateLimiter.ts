@@ -1,49 +1,53 @@
-const periods = require('./rateLimitPeriod');
-const cache = require('../cache/cache');
+import { Request } from 'express';
+import { cache } from '../cache';
 
-module.exports = class RateLimitDescriptor {
+import { TimePeriodMeta, Second, Periods } from './TimePeriod';
 
-    response = {
+export class RateLimiter {
+    public response: Object = {
         status: 'failed',
-        message: 'You are being rate limited! Try slowing down your requests.'
-    }
+        message: 'You are being rate limited! Try slowing down your requests.',
+    };
 
-    rateLimitIdentifier = (req) => {
+    private quantity: Number = 0;
+    private timePeriod: TimePeriodMeta = Second;
+
+    public rateLimitIdentifier: (req: Request) => string = (req: Request) => {
         return req.header('x-forwarded-for') || req.socket.remoteAddress;
-    }
+    };
 
-    bypassFunction = (req) => {
+    public bypassFunction: (req: Request) => boolean = () => {
         return false;
-    }
-
-    constructor() {}
+    };
 
     /**
      * Sets the time period of the rate limiting descriptor
      * @param period The period to be used to determine if a request is valid
-     * @returns The RateLimitDescriptor instance
+     * @returns The RateLimiter instance
      */
-    setPeriod(period) {
+    public setPeriod(period: string): RateLimiter {
         const parts = period.split('/');
 
         const quantity = Number(parts[0]);
         const timePeriod = parts[1].toLowerCase();
 
+        this.quantity = quantity;
+        this.timePeriod = Periods.filter(
+            (period) => period.name === timePeriod
+        )[0];
+
         if (isNaN(quantity)) {
             throw new Error('Invalid quantity specified!');
         }
 
-        if (!(timePeriod in periods)) {
+        if (!timePeriod) {
             throw new Error('Invalid time period specified!');
         }
-
-        this.quantity = quantity;
-        this.timePeriod = periods[timePeriod];
 
         return this;
     }
 
-    setResponse(response) {
+    public setResponse(response: Object): RateLimiter {
         this.response = response;
         return this;
     }
@@ -51,9 +55,11 @@ module.exports = class RateLimitDescriptor {
     /**
      * Sets the rate limit identifier callback
      * @param rateLimitIdentifier The rate limit identifier callback
-     * @return The current RateLimitDescriptor instance
+     * @return The current RateLimiter instance
      */
-    setRateLimitIdentifier(rateLimitIdentifier) {
+    public setRateLimitIdentifier(
+        rateLimitIdentifier: (request: Request) => string
+    ): RateLimiter {
         this.rateLimitIdentifier = rateLimitIdentifier;
         return this;
     }
@@ -63,7 +69,9 @@ module.exports = class RateLimitDescriptor {
      * @param bypassFunction The function, returning a boolean with whether
      * the sender should bypass rate limiting
      */
-    setBypass(bypassFunction) {
+    public setBypass(
+        bypassFunction: (request: Request) => boolean
+    ): RateLimiter {
         this.bypassFunction = bypassFunction;
         return this;
     }
@@ -73,7 +81,7 @@ module.exports = class RateLimitDescriptor {
      * @param req The request instance
      * @returns If the handler should continue with the request
      */
-    async handle(req) {
+    public async handle(req: Request): Promise<boolean> {
         if (this.bypassFunction(req)) {
             return true;
         }
@@ -84,25 +92,28 @@ module.exports = class RateLimitDescriptor {
         const timePeriod = this.timePeriod;
         const quantity = this.quantity;
 
-        let cachedData = await cache.cache.get(key);
+        let cachedData = await cache.get(key);
 
         if (!cachedData) {
-            await cache.cache.set(key, JSON.stringify([Date.now()]));
+            await cache.set(key, JSON.stringify([Date.now()]));
             return true;
         }
 
         const time = Date.now();
 
         cachedData = JSON.parse(cachedData);
-        cachedData = cachedData.filter(entry => time - entry <= timePeriod);
+        cachedData = cachedData.filter(
+            (entry: Number) =>
+                time - (entry as number) <= (timePeriod.durationTime as number)
+        );
         cachedData.push(time);
 
         if (cachedData.length > quantity) {
-            await cache.cache.set(key, JSON.stringify(cachedData));
+            await cache.set(key, JSON.stringify(cachedData));
             return false;
         }
 
-        await cache.cache.set(key, JSON.stringify(cachedData));
+        await cache.set(key, JSON.stringify(cachedData));
         return true;
     }
 }

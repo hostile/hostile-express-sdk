@@ -1,32 +1,28 @@
-require('dotenv').config();
+import { config } from 'dotenv';
+config();
 
-const { API, RedisCache } = require('../index');
+// @ts-ignore
+import express, { Express } from 'express';
 
-const express = require('express');
+import { API, LocalCache, GlobalConfig } from '../src';
+
+GlobalConfig.cache = new LocalCache().setElementLifetime(60 * 60 * 1000);
 
 /**
  * Initializes the API instance and app instance
  * Define host and port constants
  */
-const api = new API(1, '/osint', [])
-    .setCache(new RedisCache({
-        socket: {
-            host: '127.0.0.1',
-            port: 6379
-        },
-        username: '',
-        password: ''
-    }).setElementLifetime(60 * 60));
+const api: API = new API(1, '/osint', []);
+const app: Express = express();
 
-const app = express();
 app.use(express.json());
 
 const host = process.env.HOST || '127.0.0.1';
-const port = process.env.PORT || 3000;
+const port: number = parseInt(process.env.PORT) || 3000;
 
 /*
-* Add existing route to our API instance and register router
-*/
+ * Add existing route to our API instance and register router
+ */
 api.addRoute(require('./cashAppHandler'));
 api.addRoute(require('./examplePostTest'));
 
@@ -41,4 +37,4 @@ api.addRoute(require('./examplePostTest'));
     app.listen(port, host, () => {
         console.log(`Server started on http://${host}:${port}!`);
     });
-})
+});
