@@ -22,7 +22,7 @@ pull request format.
 
 Installing the Hostile API core into your preexisting Node.js
 project is simple. Ensure you have Express installed, then
-execute `npm install hostile-express-sdk`.
+execute `npm install @hostile/express-sdk`.
 
 ### Implementation - API
 
@@ -37,7 +37,7 @@ execute `npm install hostile-express-sdk`.
  * by Express.
  */
 
-import { API, LocalCache, GlobalConfig } from 'hostile-express-sdk';
+import { API, LocalCache, GlobalConfig } from '@hostile/express-sdk';
 
 GlobalConfig.cache = new LocalCache().setElementLifetime(60 * 60 * 1000);
 
@@ -141,7 +141,7 @@ import {
     Route,
     MemoryCache,
     RateLimiter,
-} from 'hostile-express-sdk';
+} from '@hostile/express-sdk';
 
 import express from 'express';
 
