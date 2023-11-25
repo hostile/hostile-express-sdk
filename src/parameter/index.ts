@@ -1,4 +1,2 @@
-import { Parameter } from './RequestParameter';
-import * as Matcher from './PredefinedMatching';
-
-export { Parameter, Matcher };
+export { Parameter } from './RequestParameter';
+export * as Matcher from './PredefinedMatching';

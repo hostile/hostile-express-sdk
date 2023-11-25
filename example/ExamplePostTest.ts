@@ -1,7 +1,7 @@
-import { Route, Parameter, Method, Matcher } from '../src';
+import { Route, DetailedRequest, Parameter, Method, Matcher } from '../src';
 import RateLimitHandler from './RateLimit';
 
-module.exports = new Route(Method.POST, '/post-test')
+export default new Route(Method.POST, '/post-test')
     .setPostBodyFields([
         new Parameter()
             .setName('username')
@@ -11,8 +11,8 @@ module.exports = new Route(Method.POST, '/post-test')
             ),
     ])
     .setRateLimitHandler(RateLimitHandler('5/minute'))
-    .setHandler(async (req, res) => {
-        const username = (req as any).postBody.username;
+    .setHandler(async (req: DetailedRequest, res) => {
+        const username = req.postBody.username;
 
         return res.status(200).json({
             status: 'success',

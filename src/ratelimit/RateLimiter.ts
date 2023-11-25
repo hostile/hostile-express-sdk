@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { cache } from '../cache';
+import { cache } from '../common/cache';
 
 import { TimePeriodMeta, Second, Periods } from './TimePeriod';
 

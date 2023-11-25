@@ -1,9 +1,9 @@
-import { Route, Parameter, Method, Matcher } from '../src';
+import { Route, DetailedRequest, Parameter, Method, Matcher } from '../src';
 import RateLimitHandler from './RateLimit';
 
 import axios from 'axios';
 
-module.exports = new Route(Method.GET, '/cashapp')
+export default new Route(Method.GET, '/cashapp')
     .setSandboxData({
         status: 200,
         data: {
@@ -22,8 +22,8 @@ module.exports = new Route(Method.GET, '/cashapp')
             ),
     ])
     .setRateLimitHandler(RateLimitHandler('5/minute'))
-    .setHandler(async (req, res) => {
-        const username = (req as any).queryParams.username;
+    .setHandler(async (req: DetailedRequest, res) => {
+        const username = req.queryParams.username;
         const response = await axios.get(`https://cash.app/$${username}`);
 
         if (response.status !== 200) {
