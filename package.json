@@ -1,6 +1,6 @@
 {
     "name": "@hostile/express-sdk",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "scripts": {
         "lint": "eslint .",
         "start-example": "npx tsc && nodemon example/index.ts"
