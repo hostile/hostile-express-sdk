@@ -1,16 +1,24 @@
 import { Request, Response } from 'express';
 
-import { Parameter } from './parameter';
+import { Parameter } from '../parameter';
 import { Method } from './Method';
-import { RateLimiter } from './ratelimit';
-import { GlobalConfig } from './config';
+import { RateLimiter } from '../ratelimit';
+import { GlobalConfig } from '../config';
 
 export interface SandboxResponse {
     status: Number;
     data: string | Object;
 }
 
-export type RouteHandler = (req: Request, res: Response) => Promise<Response>;
+export interface DetailedRequest extends Request {
+    queryParams?: NodeJS.Dict<string | string[]>;
+    postBody?: NodeJS.Dict<string | string[]>;
+}
+
+export type RouteHandler = (
+    req: Request | DetailedRequest,
+    res: Response
+) => Promise<Response>;
 
 export class Route {
     parameters: Parameter<any>[] = [];
@@ -98,15 +106,17 @@ export class Route {
                 const query = req.query as { [key: string]: string };
                 const body = req.body as { [key: string]: string };
 
-                (req as any).queryParams = {};
-                (req as any).postBody = {};
+                const outRequest = req as DetailedRequest;
+
+                outRequest.queryParams = {};
+                outRequest.postBody = {};
 
                 for (const parameter of this.parameters) {
                     const result = parameter.test(
                         req,
                         res,
                         query,
-                        (req as any).queryParams
+                        outRequest.queryParams
                     );
 
                     if (result !== true) {
@@ -119,7 +129,7 @@ export class Route {
                         req,
                         res,
                         body,
-                        (req as any).postBody
+                        outRequest.postBody
                     );
 
                     if (result !== true) {
@@ -127,7 +137,7 @@ export class Route {
                     }
                 }
 
-                return handler(req, res);
+                return handler(outRequest, res);
             }
 
             return res.status(429).json(this.rateLimitHandler.response);

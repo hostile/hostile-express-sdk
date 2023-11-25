@@ -1,10 +1,14 @@
 import 'express';
 
 import { Express, Router, IRouter } from 'express';
+import { PathLike } from 'fs';
+
 import { Cache, setCache } from './cache';
 
-import { Route } from './Route';
-import { Middleware } from './Middleware';
+import { Route } from './index';
+import { Middleware } from './index';
+
+import { findRoutes } from '../util';
 
 export class API {
     private routes: Route[] = [];
@@ -82,13 +86,24 @@ export class API {
         app.use(this.path, await this.getRouter());
     }
 
+    public registerRoutesFromDirectory(directory: PathLike): API {
+        findRoutes(directory)
+            .map((location) => require(location))
+            .filter((exported) => exported instanceof Route)
+            .forEach((route) => this.addRoute(route));
+
+        return this;
+    }
+
     /**
      * Registers the API middleware
      * @param app The app instance
      */
-    public registerMiddleware(app: Express): void {
+    public registerMiddleware(app: Express): API {
         this.middleware.forEach((middleware) =>
             app.use(this.path, middleware.use)
         );
+
+        return this;
     }
 }

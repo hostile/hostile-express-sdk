@@ -13,7 +13,7 @@ body:
       id: version
       attributes:
           label: 'Version'
-          description: What version of the Hostile API src are you encountering this bug with?
+          description: What version of the Hostile Express SDK are you encountering this bug with?
       validations:
           required: true
     - type: textarea
