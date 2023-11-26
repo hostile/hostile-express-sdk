@@ -1,4 +1,4 @@
-const { RateLimiter } = require('../src');
+import { RateLimiter } from '../src';
 
 export default (period: string) =>
     new RateLimiter().setPeriod(period).setResponse({
