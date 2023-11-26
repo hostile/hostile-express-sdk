@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { RateLimiter } from '../ratelimit';
-import { Cache, setCache } from '../common/cache';
+import { Cache, setCache } from '../common';
 
 import * as AWS from 'aws-sdk';
 

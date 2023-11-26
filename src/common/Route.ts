@@ -11,8 +11,8 @@ export interface SandboxResponse {
 }
 
 export interface DetailedRequest extends Request {
-    queryParams?: NodeJS.Dict<string | string[]>;
-    postBody?: NodeJS.Dict<string | string[]>;
+    queryParams?: NodeJS.Dict<string>;
+    postBody?: NodeJS.Dict<string>;
 }
 
 export type RouteHandler = (
