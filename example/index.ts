@@ -23,8 +23,8 @@ const port: number = parseInt(process.env.PORT) || 3000;
 /*
  * Add existing route to our API instance and register router
  */
-api.addRoute(require('./cashAppHandler'));
-api.addRoute(require('./examplePostTest'));
+api.addRoute(require('./cashAppHandler').default);
+api.addRoute(require('./examplePostTest').default);
 
 (async () => {
     api.registerMiddleware(app);

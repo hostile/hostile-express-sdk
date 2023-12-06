@@ -28,8 +28,8 @@ export class Route {
 
     handler: RouteHandler;
 
-    method: Method;
-    path: string;
+    public method: Method;
+    public path: string;
 
     constructor(method: Method, path: string) {
         this.method = method;
@@ -76,7 +76,7 @@ export class Route {
      * @param handler The handling function
      * @returns The current Route instance
      */
-    setHandler(handler: RouteHandler) {
+    public setHandler(handler: RouteHandler) {
         this.handler = async (
             req: Request,
             res: Response

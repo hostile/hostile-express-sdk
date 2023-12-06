@@ -88,7 +88,7 @@ export class API {
 
     public registerRoutesFromDirectory(directory: PathLike): API {
         findRoutes(directory)
-            .map((location) => require(location))
+            .map((location) => require(location).default)
             .filter((exported) => exported instanceof Route)
             .forEach((route) => this.addRoute(route));
 
