@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { Parameter } from '../parameter';
+import { Parameter } from './parameter';
 import { Method } from './Method';
 import { RateLimiter } from '../ratelimit';
 import { GlobalConfig } from '../config';

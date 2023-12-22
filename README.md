@@ -1,9 +1,21 @@
 # Hostile Core SDK
 
-The core Node SDK (powered by Express) used in Hostile's v2 API, 
-which simplifies management of routing, middleware, smart
-application-level rate limiting, required parameters in requests,
+A powerful SDK for Express-based REST APIs, made in TypeScript.
+
+Extremely powerful, built to handle routing, middleware, smart
+application-level rate-limiting, required parameters in requests,
 caching, and more.
+
+### Feature Summary
+
+- Handles routing automatically, and can automatically find and register all routes
+- Direct support and integration for L7 rate-limiting
+- Designed for a smooth development experience, with a goal to repeat as little code as possible
+- Easy middleware interface, with all features being available in one class
+- Input validation and requirement support
+- AWS CloudWatch logging support
+- Supports multiple types of caching
+- Fully MVC based
 
 ### Authors & Licensing
 
@@ -29,7 +41,7 @@ execute `npm install @hostile/express-sdk`.
 ```javascript
 /**
  * Creates a new API instance, with the version set to one,
- * the default route set to "example", and no middleware.
+ * the default route set to "examples", and no middleware.
  * 
  * You should already have your app instance set up.
  * This does not go over initializing your app instance,
@@ -44,7 +56,7 @@ GlobalConfig.cache = new LocalCache().setElementLifetime(60 * 60 * 1000);
 const index = new API(1, '/test', []);
 
 /**
- * Returns the path of the API (for example, /v1/example)
+ * Returns the path of the API (for examples, /v1/examples)
  */
 const path = index.path;
 
@@ -73,10 +85,10 @@ async () => {
 
 ```javascript
 /**
- * Creates a new GET route on /example, that responds to requests
+ * Creates a new GET route on /examples, that responds to requests
  * with "Hello World!"
  */
-const route = new Route(Method.GET, '/example', []).setHandler((req, res) => {
+const route = new Route(Method.GET, '/examples', []).setHandler((req, res) => {
     return res.send('Hello World!');
 });
 ```
@@ -163,7 +175,7 @@ const index = new API(1, 'example', [std]).setCache(
 );
 
 index.addRoute(
-    new Route('GET', '/example', []).setHandler((req, res) => {
+    new Route('GET', '/examples', []).setHandler((req, res) => {
         res.send('Hello World!');
     }).setRateLimitHandler(
         new RateLimiter().setPeriod('5/minute').setResponse({
