@@ -97,27 +97,25 @@ export class Parameter<M> {
      * @param _req The request object
      * @param res The response object
      * @param args The query or post body
-     * @param params The parameters to add the parsed field to
      * @returns If the parameter is valid
      */
     public test(
         _req: Request,
         res: Response,
-        args: { [key: string]: string },
-        params: { [key: string]: any }
+        args: NodeJS.Dict<any>
     ): boolean | void {
         if (this.name in args) {
             let value: string | M = args[this.name];
 
             if (this.mappingFunction && this.validationFunction(value)) {
-                value = this.mappingFunction(value);
+                value = this.mappingFunction(value as string);
             }
 
-            if (!this.validationFunction(value)) {
+            if (!this.validationFunction(value) && !res.closed) {
                 return this.malformedResponse(res);
             }
 
-            params[this.name] = value;
+            args[this.name] = value as M;
         } else if (this.required) {
             return this.missingResponse(res);
         }

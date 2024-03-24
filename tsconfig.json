@@ -8,15 +8,8 @@
         "moduleResolution": "node",
         "outDir": "dist",
         "baseUrl": "./lib/",
-        "paths": {
-            "@/*": ["./lib/*"],
-            "@common/*": ["./lib/common/*"],
-            "@config/*": ["./lib/config/*"],
-            "@types/*": ["./lib/types/*"],
-        },
         "typeRoots": [
-            "./node_modules/@types",
-            "./lib/types"
+            "./node_modules/@types"
         ]
     },
     "include": [

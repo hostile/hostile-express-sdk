@@ -5,7 +5,7 @@ import { PathLike } from 'fs';
 
 import { Cache, setCache } from '../cache';
 
-import { Route } from '../index';
+import { Route } from './Route';
 import { Middleware } from '../index';
 
 import { findRoutes } from '../../util';
@@ -61,7 +61,7 @@ export class RouteGroup {
         this.routes.forEach((route) => {
             (router as any)[route.method.toLowerCase()](
                 route.path,
-                route.handler
+                route.routeHandler
             );
         });
 

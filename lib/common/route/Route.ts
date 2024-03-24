@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import { Parameter } from '../../parameter';
-import { Method } from '@types/';
+import { Method } from '../../types';
 import { RateLimiter } from '../../ratelimit';
 import { GlobalConfig } from '../../config';
 
@@ -95,46 +95,30 @@ export class Route {
                         ](this.sandBoxResponse.data);
                 }
 
-                const query = req.query as { [key: string]: string };
-                const body = req.body as { [key: string]: string };
+                const query = req.query as NodeJS.Dict<any>;
+                const body = req.body as NodeJS.Dict<any>;
 
-                const outRequest = req as DetailedRequest;
-
-                outRequest.queryParams = {};
-                outRequest.postBody = {};
-
-                for (const parameter of this.parameters) {
-                    const result = parameter.test(
-                        req,
-                        res,
-                        query,
-                        outRequest.queryParams
-                    );
-
-                    if (result !== true) {
-                        return;
-                    }
+                if (
+                    this.parameters.filter(
+                        (parameter) => !parameter.test(req, res, query)
+                    ) ||
+                    this.postBodyFields.filter(
+                        (field) => !field.test(req, res, body)
+                    )
+                ) {
+                    return;
                 }
 
-                for (const field of this.postBodyFields) {
-                    const result = field.test(
-                        req,
-                        res,
-                        body,
-                        outRequest.postBody
-                    );
-
-                    if (result !== true) {
-                        return;
-                    }
-                }
-
-                return handler(outRequest, res);
+                return handler(req, res);
             }
 
             return res.status(429).json(this.rateLimitHandler.response);
         };
 
         return this;
+    }
+
+    get routeHandler(): RouteHandler {
+        return this.handler;
     }
 }
