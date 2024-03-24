@@ -94,14 +94,14 @@ export class Parameter<M> {
 
     /**
      * Tests if the parameter provided is valid
-     * @param req The request object
+     * @param _req The request object
      * @param res The response object
      * @param args The query or post body
      * @param params The parameters to add the parsed field to
      * @returns If the parameter is valid
      */
     public test(
-        req: Request,
+        _req: Request,
         res: Response,
         args: { [key: string]: string },
         params: { [key: string]: any }

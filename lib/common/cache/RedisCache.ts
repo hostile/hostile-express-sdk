@@ -1,14 +1,13 @@
 import { createClient, RedisClientOptions } from 'redis';
 import { Cache } from './Cache';
 
-export class RedisCache extends Cache<string> {
-    client: any;
-    connectionEstablished: boolean | undefined = undefined;
-    lifetime: Number;
+export class RedisCache implements Cache<string> {
+    private client: any = undefined;
+    private connectionEstablished: boolean = false;
+
+    private lifetime: number;
 
     constructor(redisOptions: RedisClientOptions) {
-        super();
-
         this.client = createClient(redisOptions);
 
         try {
@@ -34,7 +33,7 @@ export class RedisCache extends Cache<string> {
      * @param lifetime The lifetime of cache elements
      * @returns The current MemoryCache instance
      */
-    public setElementLifetime(lifetime: Number): RedisCache {
+    public setElementLifetime(lifetime: number): RedisCache {
         this.lifetime = lifetime;
         return this;
     }
@@ -56,11 +55,7 @@ export class RedisCache extends Cache<string> {
      */
     async set(key: string, value: string): Promise<void> {
         this.awaitCompletion();
-        await this.client.set(
-            key,
-            value,
-            Date.now() + (this.lifetime as number)
-        );
+        await this.client.set(key, value, Date.now() + this.lifetime);
     }
 
     private awaitCompletion(): boolean {

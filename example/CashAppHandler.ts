@@ -1,4 +1,4 @@
-import { Route, DetailedRequest, Parameter, Method, Matcher } from '../src';
+import { Route, DetailedRequest, Parameter, Method, Matcher } from '../lib';
 import RateLimitHandler from './RateLimit';
 
 import axios from 'axios';

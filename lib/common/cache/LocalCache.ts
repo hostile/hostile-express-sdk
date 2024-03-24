@@ -1,22 +1,25 @@
 import { Cache } from './Cache';
 
-interface CacheEntry<T> {
+export interface CacheEntry<T> {
     value: T;
     lastAccessTime: Number;
 }
 
-export class LocalCache<V> extends Cache<V> {
-    private values: { [key: string]: CacheEntry<V> } = {};
-    private lastPurge: Number = Date.now();
-    private purgeTimePeriod: Number = 5000;
-    private lifetime: Number = 30000;
+export class LocalCache<V> implements Cache<V> {
+    private values: NodeJS.Dict<CacheEntry<V>> = {};
+
+    private lastPurge: number = Date.now();
+    private purgeTimePeriod: number = 5000;
+    private lifetime: number = 30000;
+
+    connect() {}
 
     /**
      * Sets the purge cooldown
      * @param purgeTimePeriod The cooldown duration
      * @returns The current MemoryCache instance
      */
-    public setPurgeTimePeriod(purgeTimePeriod: Number): LocalCache<V> {
+    public setPurgeTimePeriod(purgeTimePeriod: number): LocalCache<V> {
         this.purgeTimePeriod = purgeTimePeriod;
         return this;
     }
@@ -26,7 +29,7 @@ export class LocalCache<V> extends Cache<V> {
      * @param lifetime The lifetime of cache elements
      * @returns The current MemoryCache instance
      */
-    public setElementLifetime(lifetime: Number): LocalCache<V> {
+    public setElementLifetime(lifetime: number): LocalCache<V> {
         this.lifetime = lifetime;
         return this;
     }

@@ -7,12 +7,19 @@
         "noImplicitAny": true,
         "moduleResolution": "node",
         "outDir": "dist",
-        "baseUrl": "./src/",
+        "baseUrl": "./lib/",
         "paths": {
-            "*": ["node_modules/*"]
-        }
+            "@/*": ["./lib/*"],
+            "@common/*": ["./lib/common/*"],
+            "@config/*": ["./lib/config/*"],
+            "@types/*": ["./lib/types/*"],
+        },
+        "typeRoots": [
+            "./node_modules/@types",
+            "./lib/types"
+        ]
     },
     "include": [
-      "src/**/*"
+      "lib/**/*"
     ]
 }

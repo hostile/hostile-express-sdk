@@ -1,32 +1,24 @@
 import { Request, Response } from 'express';
 
-import { Parameter } from '../parameter';
-import { Method } from './Method';
-import { RateLimiter } from '../ratelimit';
-import { GlobalConfig } from '../config';
+import { Parameter } from '../../parameter';
+import { Method } from '@types/';
+import { RateLimiter } from '../../ratelimit';
+import { GlobalConfig } from '../../config';
 
 export interface SandboxResponse {
-    status: Number;
-    data: string | Object;
+    status: number;
+    data: string | NodeJS.Dict<any>;
 }
 
-export interface DetailedRequest extends Request {
-    queryParams?: NodeJS.Dict<string>;
-    postBody?: NodeJS.Dict<string>;
-}
-
-export type RouteHandler = (
-    req: Request | DetailedRequest,
-    res: Response
-) => Promise<Response>;
+export type RouteHandler = (req: Request, res: Response) => Promise<Response>;
 
 export class Route {
-    parameters: Parameter<any>[] = [];
-    postBodyFields: Parameter<any>[] = [];
-    rateLimitHandler: RateLimiter | undefined;
-    sandBoxResponse: SandboxResponse | undefined;
+    private parameters: Parameter<any>[] = [];
+    private postBodyFields: Parameter<any>[] = [];
+    private rateLimitHandler?: RateLimiter;
+    private sandBoxResponse?: SandboxResponse;
 
-    handler: RouteHandler;
+    private handler: RouteHandler;
 
     public method: Method;
     public path: string;
@@ -90,7 +82,7 @@ export class Route {
 
             if (value) {
                 if (
-                    GlobalConfig.requestSandboxable(req) &&
+                    GlobalConfig.canRequestUseSandbox(req) &&
                     req.query.sandbox &&
                     this.sandBoxResponse
                 ) {

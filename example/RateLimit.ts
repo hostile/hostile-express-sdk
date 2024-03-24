@@ -1,4 +1,4 @@
-import { RateLimiter } from '../src';
+import { RateLimiter } from '../lib';
 
 export default (period: string) =>
     new RateLimiter().setPeriod(period).setResponse({
