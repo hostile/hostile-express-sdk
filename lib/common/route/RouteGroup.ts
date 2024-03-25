@@ -14,7 +14,7 @@ export class RouteGroup {
     private routes: Route[] = [];
     private middleware: Middleware[] = [];
 
-    private readonly path: string;
+    public readonly path: string;
 
     constructor(path: string, middleware: Middleware[]) {
         this.path = path;
