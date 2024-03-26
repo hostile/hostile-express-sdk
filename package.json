@@ -8,7 +8,7 @@
         "eslint:lint": "eslint .",
         "eslint:fix": "eslint . --fix",
         "start:dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
-        "start-example": "npx tsc && nodemon example/index.ts",
+        "start:example": "npx tsc && nodemon example/index.ts",
         "prepare": "husky install",
         "test": "jest"
     },
