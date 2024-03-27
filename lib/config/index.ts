@@ -19,7 +19,7 @@ export interface AWSConfig {
 }
 
 export class Config implements DefaultsConfig {
-    canRequestUseSandbox: (request: Request) => boolean = () => false;
+    canRequestUseSandbox: (request: Request) => boolean;
     defaultRateLimitBuilder?: (max: string) => RateLimiter;
     defaultRateLimitHandler?: RateLimiter;
 
@@ -32,7 +32,7 @@ export class Config implements DefaultsConfig {
 
         this.defaultRateLimitHandler = config.rateLimitHandler;
         this.defaultRateLimitBuilder = config.rateLimitHandlerBuilder;
-        this.canRequestUseSandbox = config.canRequestUseSandbox;
+        this.canRequestUseSandbox = config.canRequestUseSandbox || ((_req: Request) => false);
     }
 
     set cache(cache: Cache<any>) {

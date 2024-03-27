@@ -13,7 +13,7 @@ export class Parameter<M> {
             error: `Field ${this.name} missing!`,
         });
 
-    private required: boolean = false;
+    private required: boolean = true;
     private name: string;
 
     /**
@@ -112,12 +112,14 @@ export class Parameter<M> {
             }
 
             if (!this.validationFunction(value) && !res.closed) {
-                return this.malformedResponse(res);
+                this.malformedResponse(res);
+                return false;
             }
 
             args[this.name] = value as M;
         } else if (this.required) {
-            return this.missingResponse(res);
+            this.missingResponse(res);
+            return false;
         }
 
         return true;

@@ -65,20 +65,14 @@ export class LocalCache<V> implements Cache<V> {
      * Clears the expired values from the cache
      */
     public clear(): void {
-        if (
-            Date.now() - (this.lastPurge as number) <=
-            (this.purgeTimePeriod as number)
-        ) {
+        if (Date.now() - (this.lastPurge as number) <= (this.purgeTimePeriod as number)) {
             return;
         }
 
         for (const key in this.values) {
             const entry = this.values[key];
 
-            if (
-                Date.now() - (entry.lastAccessTime as number) >=
-                (this.lifetime as number)
-            ) {
+            if (Date.now() - (entry.lastAccessTime as number) >= (this.lifetime as number)) {
                 delete this.values[key];
             }
         }

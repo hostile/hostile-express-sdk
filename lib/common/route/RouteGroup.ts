@@ -16,7 +16,7 @@ export class RouteGroup {
 
     public readonly path: string;
 
-    constructor(path: string, middleware: Middleware[]) {
+    constructor(path: string, middleware: Middleware[] = []) {
         this.path = path;
         this.middleware = middleware;
     }
@@ -59,10 +59,7 @@ export class RouteGroup {
         const router = Router();
 
         this.routes.forEach((route) => {
-            (router as any)[route.method.toLowerCase()](
-                route.path,
-                route.routeHandler
-            );
+            (router as any)[route.method.toLowerCase()](route.path, route.routeHandler);
         });
 
         return router;
@@ -86,9 +83,13 @@ export class RouteGroup {
      * @param app The app instance
      */
     public registerMiddleware(app: Express): RouteGroup {
-        this.middleware.forEach((middleware) =>
-            app.use(this.path, middleware.use)
-        );
+        this.middleware.forEach((middleware) => app.use(this.path, middleware.use));
+        return this;
+    }
+
+    public async register(app: Express): Promise<RouteGroup> {
+        this.registerMiddleware(app);
+        await this.registerRoutes(app);
 
         return this;
     }

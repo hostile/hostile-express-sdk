@@ -8,11 +8,7 @@
         "moduleResolution": "node",
         "outDir": "dist",
         "baseUrl": "./lib/",
-        "typeRoots": [
-            "./node_modules/@types"
-        ]
+        "typeRoots": ["./node_modules/@types"]
     },
-    "include": [
-      "lib/**/*"
-    ]
+    "include": ["lib/**/*"]
 }

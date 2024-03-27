@@ -31,9 +31,7 @@ export async function createLogGroupIfNotExists(
         })
         .promise();
 
-    const groupExists = logGroups.logGroups.some(
-        (group) => group.logGroupName === groupName
-    );
+    const groupExists = logGroups.logGroups.some((group) => group.logGroupName === groupName);
 
     if (!groupExists) {
         await cloudLogs.createLogGroup({

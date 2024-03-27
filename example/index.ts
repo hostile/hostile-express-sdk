@@ -1,8 +1,6 @@
 import { config } from 'dotenv';
 config();
 
-console.log('asd');
-
 import express, { Express } from 'express';
 
 import { OsintRouteGroup } from './routes';
@@ -21,18 +19,13 @@ app.use(express.json());
 const host: string = process.env.HOST || '127.0.0.1';
 const port: number = parseInt(process.env.PORT) || 3000;
 
-console.log('asd');
-
-/*
- * Add existing route to our RouteGroup instance and register router
+/**
+ * Register our route group's middleware and routes
  */
-OsintRouteGroup.registerMiddleware(app);
-
-OsintRouteGroup.registerRoutes(app).then(() => {
+OsintRouteGroup.register(app).then(() => {
     /**
      * Listens for connections on the provided hostname and port
      */
-
     app.listen(port, host, () => {
         console.log(`Server started on http://${host}:${port}!`);
     });

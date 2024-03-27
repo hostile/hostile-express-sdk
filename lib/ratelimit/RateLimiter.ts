@@ -32,9 +32,7 @@ export class RateLimiter {
         const timePeriod = parts[1].toLowerCase();
 
         this.quantity = quantity;
-        this.timePeriod = Periods.filter(
-            (period) => period.name === timePeriod
-        )[0];
+        this.timePeriod = Periods.filter((period) => period.name === timePeriod)[0];
 
         if (isNaN(quantity)) {
             throw new Error('Invalid quantity specified!');
@@ -57,9 +55,7 @@ export class RateLimiter {
      * @param rateLimitIdentifier The rate limit identifier callback
      * @return The current RateLimiter instance
      */
-    public setRateLimitIdentifier(
-        rateLimitIdentifier: (request: Request) => string
-    ): RateLimiter {
+    public setRateLimitIdentifier(rateLimitIdentifier: (request: Request) => string): RateLimiter {
         this.rateLimitIdentifier = rateLimitIdentifier;
         return this;
     }
@@ -69,9 +65,7 @@ export class RateLimiter {
      * @param bypassFunction The function, returning a boolean with whether
      * the sender should bypass rate limiting
      */
-    public setBypass(
-        bypassFunction: (request: Request) => boolean
-    ): RateLimiter {
+    public setBypass(bypassFunction: (request: Request) => boolean): RateLimiter {
         this.bypassFunction = bypassFunction;
         return this;
     }
@@ -103,8 +97,7 @@ export class RateLimiter {
 
         cachedData = JSON.parse(cachedData);
         cachedData = cachedData.filter(
-            (entry: Number) =>
-                time - (entry as number) <= (timePeriod.durationTime as number)
+            (entry: Number) => time - (entry as number) <= (timePeriod.durationTime as number)
         );
         cachedData.push(time);
 

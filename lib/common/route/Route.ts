@@ -69,43 +69,31 @@ export class Route {
      * @returns The current Route instance
      */
     public setHandler(handler: RouteHandler) {
-        this.handler = async (
-            req: Request,
-            res: Response
-        ): Promise<Response> => {
+        this.handler = async (req: Request, res: Response): Promise<Response> => {
             /*
             In the future, this should be its own middleware, instead of being tied to the handler.
              */
 
-            const value = await (!this.rateLimitHandler ||
-                this.rateLimitHandler.handle(req));
+            const value = await (!this.rateLimitHandler || this.rateLimitHandler.handle(req));
 
             if (value) {
-                if (
-                    GlobalConfig.canRequestUseSandbox(req) &&
-                    req.query.sandbox &&
-                    this.sandBoxResponse
-                ) {
+                if (GlobalConfig.canRequestUseSandbox(req) && req.query.sandbox && this.sandBoxResponse) {
                     return res
                         .status(this.sandBoxResponse.status as number)
-                        [
-                            typeof this.sandBoxResponse.data === 'string'
-                                ? 'send'
-                                : 'json'
-                        ](this.sandBoxResponse.data);
+                        [typeof this.sandBoxResponse.data === 'string' ? 'send' : 'json'](
+                            this.sandBoxResponse.data
+                        );
                 }
 
                 const query = req.query as NodeJS.Dict<any>;
                 const body = req.body as NodeJS.Dict<any>;
 
-                if (
-                    this.parameters.filter(
-                        (parameter) => !parameter.test(req, res, query)
-                    ) ||
-                    this.postBodyFields.filter(
-                        (field) => !field.test(req, res, body)
-                    )
-                ) {
+                const neededFields = [
+                    ...this.parameters.map((parameter) => parameter.test(req, res, query)),
+                    ...this.postBodyFields.map((field) => field.test(req, res, body)),
+                ].filter((field) => !field);
+
+                if (neededFields.length > 0) {
                     return;
                 }
 

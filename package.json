@@ -1,12 +1,12 @@
 {
     "name": "@hostile/express-sdk",
-    "version": "2.1.5",
+    "version": "2.1.7",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "npx tsc && npx tsc-alias",
         "eslint:lint": "eslint .",
-        "eslint:fix": "eslint . --fix",
+        "eslint:fix": "eslint ./**/*.ts --fix",
         "start:dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
         "start:example": "npx tsc && nodemon example/index.ts",
         "prepare": "husky install",
@@ -22,7 +22,6 @@
         "watch": [
             "lib"
         ],
-        "exec": "node -r tsconfig-paths/register -r ts-node/register ./lib/index.ts",
         "ext": "ts, js"
     },
     "dependencies": {
