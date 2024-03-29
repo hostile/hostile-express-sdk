@@ -104,7 +104,7 @@ export class Parameter<M> {
         res: Response,
         args: NodeJS.Dict<any>
     ): boolean | void {
-        if (this.name in args) {
+        if (args && this.name in args) {
             let value: string | M = args[this.name];
 
             if (this.mappingFunction && this.validationFunction(value)) {
