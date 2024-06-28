@@ -14,7 +14,7 @@
         "dotenv": "^16.1.4",
         "eslint-config-prettier": "^9.0.0",
         "eslint-plugin-prettier": "^5.0.1",
-        "express": "^4.18.2",
+        "express": "^4.19.2",
         "nodemon": "^2.0.22",
         "prettier": "^3.1.0",
         "redis": "^4.6.7",
