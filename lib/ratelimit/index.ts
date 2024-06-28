@@ -1,2 +1,2 @@
-export { RateLimiter } from './RateLimiter';
+export * from './RateLimiter';
 export * as TimePeriod from './TimePeriod';

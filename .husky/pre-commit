@@ -1,4 +1,8 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-#npm.cmd run eslint:fix && git add .
+if [[ "$OSTYPE" == "cygwin" || "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+  npm.cmd run eslint:fix && git add .
+else
+  npm run eslint:fix && git add .
+fi

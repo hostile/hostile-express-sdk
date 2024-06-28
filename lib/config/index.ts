@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { RateLimiter } from '../ratelimit';
-import { Cache, setCache } from '../common';
+import { ExpressCache, setCache } from '../route';
 
 import * as AWS from 'aws-sdk';
 
@@ -35,7 +35,7 @@ export class Config implements DefaultsConfig {
         this.canRequestUseSandbox = config.canRequestUseSandbox || ((_req: Request) => false);
     }
 
-    set cache(cache: Cache<any>) {
+    set cache(cache: ExpressCache<any>) {
         setCache(cache);
     }
 

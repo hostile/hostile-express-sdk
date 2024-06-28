@@ -1,14 +1,16 @@
 {
     "name": "@hostile/express-sdk",
-    "version": "2.1.8",
+    "version": "2.1.9",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "bugs": {
+        "url": "https://github.com/hostile/hostile-express-sdk/issues"
+    },
     "scripts": {
         "build": "npx tsc && npx tsc-alias",
-        "eslint:lint": "eslint .",
-        "eslint:fix": "eslint ./**/*.ts --fix",
-        "start:dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
-        "start:example": "npx tsc && nodemon example/index.ts",
+        "eslint:lint": "eslint ./lib/*",
+        "eslint:fix": "eslint ./lib/* --fix",
+        "start:dev": "npx tsc && nodemon example/index.ts",
         "prepare": "husky install",
         "test": "jest"
     },
@@ -20,15 +22,19 @@
             "node_modules"
         ],
         "watch": [
-            "lib"
+            "lib",
+            "demo"
         ],
         "ext": "ts, js"
     },
-    "dependencies": {
+    "devDependencies": {
         "@types/express": "^4.17.21",
+        "@typescript-eslint/eslint-plugin": "^6.11.0",
+        "@typescript-eslint/parser": "^6.11.0",
         "aws-sdk": "^2.1499.0",
         "axios": "^1.6.8",
         "dotenv": "^16.1.4",
+        "eslint": "^8.53.0",
         "eslint-config-prettier": "^9.0.0",
         "eslint-plugin-prettier": "^5.0.1",
         "express": "^4.18.2",
@@ -37,12 +43,7 @@
         "prettier": "^3.1.0",
         "redis": "^4.6.7",
         "ts-node": "^10.9.1",
-        "tsc-alias": "^1.8.8"
-    },
-    "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^6.11.0",
-        "@typescript-eslint/parser": "^6.11.0",
-        "eslint": "^8.53.0",
+        "tsc-alias": "^1.8.8",
         "typescript": "^5.2.2"
     },
     "author": "Hostile Dev Team",

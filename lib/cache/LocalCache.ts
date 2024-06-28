@@ -1,18 +1,16 @@
-import { Cache } from './Cache';
+import { ExpressCache } from './Cache.types';
 
 export interface CacheEntry<T> {
     value: T;
-    lastAccessTime: Number;
+    lastAccessTime: number;
 }
 
-export class LocalCache<V> implements Cache<V> {
+export class LocalCache<V> implements ExpressCache<V> {
     private values: NodeJS.Dict<CacheEntry<V>> = {};
 
     private lastPurge: number = Date.now();
     private purgeTimePeriod: number = 5000;
     private lifetime: number = 30000;
-
-    connect() {}
 
     /**
      * Sets the purge cooldown
@@ -65,17 +63,15 @@ export class LocalCache<V> implements Cache<V> {
      * Clears the expired values from the cache
      */
     public clear(): void {
-        if (Date.now() - (this.lastPurge as number) <= (this.purgeTimePeriod as number)) {
+        if (Date.now() - this.lastPurge <= this.purgeTimePeriod) {
             return;
         }
 
-        for (const key in this.values) {
-            const entry = this.values[key];
-
-            if (Date.now() - (entry.lastAccessTime as number) >= (this.lifetime as number)) {
-                delete this.values[key];
-            }
-        }
+        Object.keys(this.values)
+            .filter((key: string) => {
+                return Date.now() - this.values[key].lastAccessTime >= this.lifetime;
+            })
+            .forEach((key) => delete this.values[key]);
 
         this.lastPurge = Date.now();
     }

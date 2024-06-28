@@ -3,12 +3,12 @@ import 'express';
 import { Express, Router, IRouter } from 'express';
 import { PathLike } from 'fs';
 
-import { Cache, setCache } from '../cache';
+import { ExpressCache, setCache } from '../cache';
 
 import { Route } from './Route';
-import { Middleware } from '../index';
+import { Middleware } from './index';
 
-import { findRoutes } from '../../util';
+import { findRoutes } from '../util';
 
 export class RouteGroup {
     private routes: Route[] = [];
@@ -46,7 +46,7 @@ export class RouteGroup {
      * @param cacheInstance The cache to set the instance to
      * @returns The current RouteGroup instance
      */
-    public setCache<V>(cacheInstance: Cache<V>): RouteGroup {
+    public setCache<V>(cacheInstance: ExpressCache<V>): RouteGroup {
         setCache(cacheInstance);
         return this;
     }

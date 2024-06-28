@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 
-import { Parameter } from '../../parameter';
-import { Method } from '../../types';
-import { RateLimiter } from '../../ratelimit';
-import { GlobalConfig } from '../../config';
+import { Parameter } from '../parameter';
+import { Method } from '../types';
+import { RateLimiter } from '../ratelimit';
+import { GlobalConfig } from '../config';
 
 export interface SandboxResponse {
     status: number;
@@ -77,7 +77,11 @@ export class Route {
             const value = await (!this.rateLimitHandler || this.rateLimitHandler.handle(req));
 
             if (value) {
-                if (GlobalConfig.canRequestUseSandbox(req) && req.query.sandbox && this.sandBoxResponse) {
+                if (
+                    GlobalConfig.canRequestUseSandbox(req) &&
+                    req.query.sandbox &&
+                    this.sandBoxResponse
+                ) {
                     return res
                         .status(this.sandBoxResponse.status as number)
                         [typeof this.sandBoxResponse.data === 'string' ? 'send' : 'json'](

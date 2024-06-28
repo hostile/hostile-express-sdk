@@ -2,8 +2,7 @@ import { Request, Response } from 'express';
 
 export class Parameter<M> {
     private validationFunction: (param: string | M) => boolean = () => true;
-    private mappingFunction: (param: string) => M | null = (param: string) =>
-        param as M;
+    private mappingFunction: (param: string) => M | null = (param: string) => param as M;
     private malformedResponse: (res: Response) => void = (res: Response) =>
         res.status(400).json({
             error: `Field ${this.name} malformed!`,
@@ -21,9 +20,7 @@ export class Parameter<M> {
      * @param validationFunction The function that determines if an input is valid
      * @returns The current Parameter instance
      */
-    public setValidationFunction(
-        validationFunction: (param: string) => boolean
-    ): Parameter<M> {
+    public setValidationFunction(validationFunction: (param: string) => boolean): Parameter<M> {
         this.validationFunction = validationFunction;
         return this;
     }
@@ -33,9 +30,7 @@ export class Parameter<M> {
      * @param mappingFunction The function that maps the query into a readable state
      * @returns The current Parameter instance
      */
-    public setMappingFunction(
-        mappingFunction: (param: string) => M | null
-    ): Parameter<M> {
+    public setMappingFunction(mappingFunction: (param: string) => M | null): Parameter<M> {
         this.mappingFunction = mappingFunction;
         return this;
     }
@@ -45,9 +40,7 @@ export class Parameter<M> {
      * @param malformedResponse The response callback
      * @returns The current Parameter instance
      */
-    public setMalformedResponse(
-        malformedResponse: (res: Response) => void
-    ): Parameter<M> {
+    public setMalformedResponse(malformedResponse: (res: Response) => void): Parameter<M> {
         this.malformedResponse = malformedResponse;
         return this;
     }
@@ -57,9 +50,7 @@ export class Parameter<M> {
      * @param missingResponse The response callback
      * @returns The current Parameter instance
      */
-    public setMissingResponse(
-        missingResponse: (res: Response) => void
-    ): Parameter<M> {
+    public setMissingResponse(missingResponse: (res: Response) => void): Parameter<M> {
         this.missingResponse = missingResponse;
         return this;
     }
@@ -99,11 +90,7 @@ export class Parameter<M> {
      * @param args The query or post body
      * @returns If the parameter is valid
      */
-    public test(
-        _req: Request,
-        res: Response,
-        args: NodeJS.Dict<any>
-    ): boolean | void {
+    public test(_req: Request, res: Response, args: NodeJS.Dict<any>): boolean | void {
         if (args && this.name in args) {
             let value: string | M = args[this.name];
 

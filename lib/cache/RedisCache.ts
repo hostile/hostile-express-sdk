@@ -1,7 +1,7 @@
 import { createClient, RedisClientOptions } from 'redis';
-import { Cache } from './Cache';
+import { ExpressCache } from './Cache.types';
 
-export class RedisCache implements Cache<string> {
+export class RedisCache implements ExpressCache<string> {
     private client: any = undefined;
     private connectionEstablished: boolean = false;
 
@@ -13,8 +13,6 @@ export class RedisCache implements Cache<string> {
         try {
             this.connect().then(() => {
                 this.connectionEstablished = true;
-
-                console.log('Connected to Redis!');
             });
         } catch (exc: any) {
             this.connectionEstablished = false;
