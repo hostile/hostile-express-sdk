@@ -1,39 +1,27 @@
 import { config } from 'dotenv';
 config();
 
-// @ts-ignore
 import express, { Express } from 'express';
 
-import { API, LocalCache, GlobalConfig } from '../src';
+import { routeGroup } from './routes';
+import { LocalCache, GlobalConfig } from '../lib';
 
 GlobalConfig.cache = new LocalCache().setElementLifetime(60 * 60 * 1000);
 
-/**
- * Initializes the API instance and app instance
- * Define host and port constants
- */
-const api: API = new API(1, '/osint', []);
 const app: Express = express();
 
 app.use(express.json());
 
-const host = process.env.HOST || '127.0.0.1';
+const host: string = process.env.HOST || '127.0.0.1';
 const port: number = parseInt(process.env.PORT) || 3000;
 
-/*
- * Add existing route to our API instance and register router
+/**
+ * Register our route group's middleware and routes
  */
-api.addRoute(require('./cashAppHandler').default);
-api.addRoute(require('./examplePostTest').default);
-
-(async () => {
-    api.registerMiddleware(app);
-    await api.registerRoutes(app);
-})().then(() => {
+routeGroup.register(app).then(() => {
     /**
      * Listens for connections on the provided hostname and port
      */
-
     app.listen(port, host, () => {
         console.log(`Server started on http://${host}:${port}!`);
     });

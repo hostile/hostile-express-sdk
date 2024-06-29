@@ -6,8 +6,8 @@ export async function submitEvent(
     groupName: string,
     streamName: string,
     message: string
-): Promise<void> {
-    await cloudLogs
+): Promise<AWS.CloudWatchLogs.PutLogEventsResponse> {
+    return cloudLogs
         .putLogEvents({
             logGroupName: groupName,
             logStreamName: streamName,
@@ -31,14 +31,14 @@ export async function createLogGroupIfNotExists(
         })
         .promise();
 
-    const groupExists = logGroups.logGroups.some(
-        (group) => group.logGroupName === groupName
-    );
+    const groupExists = logGroups.logGroups.some((group) => group.logGroupName === groupName);
 
     if (!groupExists) {
-        await cloudLogs.createLogGroup({
-            logGroupName: groupName,
-        });
+        await cloudLogs
+            .createLogGroup({
+                logGroupName: groupName,
+            })
+            .promise();
     }
 
     const logStreams = await cloudLogs
@@ -53,9 +53,11 @@ export async function createLogGroupIfNotExists(
     );
 
     if (logStreamExists) {
-        await cloudLogs.createLogStream({
-            logGroupName: groupName,
-            logStreamName: streamName,
-        });
+        await cloudLogs
+            .createLogStream({
+                logGroupName: groupName,
+                logStreamName: streamName,
+            })
+            .promise();
     }
 }

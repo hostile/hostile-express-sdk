@@ -6,11 +6,7 @@ export class Middleware {
     /**
      * Abstract usage method
      */
-    public async use(
-        _req: Request,
-        _res: Response,
-        _next: () => void
-    ): Promise<void> {
+    public async use(_req: Request, _res: Response, _next: () => void): Promise<void> {
         throw new Error('Middleware function not overridden!');
     }
 

@@ -1,21 +1,18 @@
 import { createClient, RedisClientOptions } from 'redis';
-import { Cache } from './Cache';
+import { ExpressCache } from './Cache.types';
 
-export class RedisCache extends Cache<string> {
-    client: any;
-    connectionEstablished: boolean | undefined = undefined;
-    lifetime: Number;
+export class RedisCache implements ExpressCache<string> {
+    private client: any = undefined;
+    private connectionEstablished: boolean = false;
+
+    private lifetime: number;
 
     constructor(redisOptions: RedisClientOptions) {
-        super();
-
         this.client = createClient(redisOptions);
 
         try {
             this.connect().then(() => {
                 this.connectionEstablished = true;
-
-                console.log('Connected to Redis!');
             });
         } catch (exc: any) {
             this.connectionEstablished = false;
@@ -34,7 +31,7 @@ export class RedisCache extends Cache<string> {
      * @param lifetime The lifetime of cache elements
      * @returns The current MemoryCache instance
      */
-    public setElementLifetime(lifetime: Number): RedisCache {
+    public setElementLifetime(lifetime: number): RedisCache {
         this.lifetime = lifetime;
         return this;
     }
@@ -56,11 +53,7 @@ export class RedisCache extends Cache<string> {
      */
     async set(key: string, value: string): Promise<void> {
         this.awaitCompletion();
-        await this.client.set(
-            key,
-            value,
-            Date.now() + (this.lifetime as number)
-        );
+        await this.client.set(key, value, Date.now() + this.lifetime);
     }
 
     private awaitCompletion(): boolean {

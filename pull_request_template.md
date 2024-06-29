@@ -4,6 +4,6 @@ description of what your changes do, and your pull request will be reviewed
 by a team member.
 -->
 
-### Affect
+### Effect / Summary
 
 <!-- Please provide a description of how your changes affect the existing codebase -->

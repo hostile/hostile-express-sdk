@@ -1,22 +1,23 @@
-import { Cache } from './Cache';
+import { ExpressCache } from './Cache.types';
 
-interface CacheEntry<T> {
+export interface CacheEntry<T> {
     value: T;
-    lastAccessTime: Number;
+    lastAccessTime: number;
 }
 
-export class LocalCache<V> extends Cache<V> {
-    private values: { [key: string]: CacheEntry<V> } = {};
-    private lastPurge: Number = Date.now();
-    private purgeTimePeriod: Number = 5000;
-    private lifetime: Number = 30000;
+export class LocalCache<V> implements ExpressCache<V> {
+    private values: NodeJS.Dict<CacheEntry<V>> = {};
+
+    private lastPurge: number = Date.now();
+    private purgeTimePeriod: number = 5000;
+    private lifetime: number = 30000;
 
     /**
      * Sets the purge cooldown
      * @param purgeTimePeriod The cooldown duration
      * @returns The current MemoryCache instance
      */
-    public setPurgeTimePeriod(purgeTimePeriod: Number): LocalCache<V> {
+    public setPurgeTimePeriod(purgeTimePeriod: number): LocalCache<V> {
         this.purgeTimePeriod = purgeTimePeriod;
         return this;
     }
@@ -26,7 +27,7 @@ export class LocalCache<V> extends Cache<V> {
      * @param lifetime The lifetime of cache elements
      * @returns The current MemoryCache instance
      */
-    public setElementLifetime(lifetime: Number): LocalCache<V> {
+    public setElementLifetime(lifetime: number): LocalCache<V> {
         this.lifetime = lifetime;
         return this;
     }
@@ -62,23 +63,15 @@ export class LocalCache<V> extends Cache<V> {
      * Clears the expired values from the cache
      */
     public clear(): void {
-        if (
-            Date.now() - (this.lastPurge as number) <=
-            (this.purgeTimePeriod as number)
-        ) {
+        if (Date.now() - this.lastPurge <= this.purgeTimePeriod) {
             return;
         }
 
-        for (const key in this.values) {
-            const entry = this.values[key];
-
-            if (
-                Date.now() - (entry.lastAccessTime as number) >=
-                (this.lifetime as number)
-            ) {
-                delete this.values[key];
-            }
-        }
+        Object.keys(this.values)
+            .filter((key: string) => {
+                return Date.now() - this.values[key].lastAccessTime >= this.lifetime;
+            })
+            .forEach((key) => delete this.values[key]);
 
         this.lastPurge = Date.now();
     }
