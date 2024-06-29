@@ -1,9 +1,11 @@
 # Hostile Core SDK
 
-The core Node SDK (powered by Express) used in Hostile's v2 RouteGroup, 
-which simplifies management of routing, middleware, smart
-application-level rate limiting, required parameters in requests,
+The Hostile Core SDK (built on top of Express) simplifies management of routing,
+middleware, smart application-level rate limiting, required parameters in requests,
 caching, and more.
+
+THis library aimed at saving developers time while writing high-performance web applications,
+while being completely lightweight.
 
 ### Authors & Licensing
 
@@ -20,7 +22,7 @@ pull request format.
 
 ### Installation
 
-Installing the Hostile RouteGroup core into your preexisting Node.js
+Installing this library into your preexisting Node.js
 project is simple. Ensure you have Express installed, then
 execute `npm install @hostile/express-sdk`.
 
@@ -41,10 +43,10 @@ import { RouteGroup, LocalCache, GlobalConfig } from '@hostile/express-sdk';
 
 GlobalConfig.cache = new LocalCache().setElementLifetime(60 * 60 * 1000);
 
-const index = new RouteGroup(1, '/test', []);
+const index = new RouteGroup('/test');
 
 /**
- * Returns the path of the RouteGroup (for example, /v1/example)
+ * Returns the path of the RouteGroup (for example, /example)
  */
 const path = index.path;
 
@@ -76,7 +78,7 @@ async () => {
  * Creates a new GET route on /example, that responds to requests
  * with "Hello World!"
  */
-const route = new Route(Method.GET, '/example', []).setHandler((req, res) => {
+const route = new Route(Method.GET, '/example').setHandler((req, res) => {
     return res.send('Hello World!');
 });
 ```
@@ -145,18 +147,18 @@ import {
 
 import express from 'express';
 
-const std = new Middleware();
+const example = new Middleware();
 const app = express();
 
 const host = process.env.HOST || '127.0.0.1';
 const port = 3000;
 
-std.setUse((req, res, next) => {
+example.setUse((req, res, next) => {
     console.log('Hello World!');
     next();
 });
 
-const index = new RouteGroup(1, 'example', [std]).setCache(
+const index = new RouteGroup('example', [example]).setCache(
     new LocalCache()
         .setElementLifetime(1000 * 60 * 60)
         .setPurgeTimePeriod(5000)

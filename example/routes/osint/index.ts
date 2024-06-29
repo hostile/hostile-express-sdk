@@ -1,7 +1,9 @@
 import { RouteGroup } from '../../../lib';
 import { cashAppGet, cashAppPost } from './cashapp.controller';
 
-export const OsintRouteGroup = new RouteGroup('/osint');
+const routeGroup = new RouteGroup('/osint');
 
-OsintRouteGroup.addRoute(cashAppGet);
-OsintRouteGroup.addRoute(cashAppPost);
+routeGroup.addRoute(cashAppGet);
+routeGroup.addRoute(cashAppPost);
+
+export { routeGroup };

@@ -3,15 +3,11 @@ config();
 
 import express, { Express } from 'express';
 
-import { OsintRouteGroup } from './routes';
+import { routeGroup } from './routes';
 import { LocalCache, GlobalConfig } from '../lib';
 
 GlobalConfig.cache = new LocalCache().setElementLifetime(60 * 60 * 1000);
 
-/**
- * Initializes the RouteGroup instance and app instance
- * Define host and port constants
- */
 const app: Express = express();
 
 app.use(express.json());
@@ -22,7 +18,7 @@ const port: number = parseInt(process.env.PORT) || 3000;
 /**
  * Register our route group's middleware and routes
  */
-OsintRouteGroup.register(app).then(() => {
+routeGroup.register(app).then(() => {
     /**
      * Listens for connections on the provided hostname and port
      */
