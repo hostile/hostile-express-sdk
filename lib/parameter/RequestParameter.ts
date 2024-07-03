@@ -105,7 +105,10 @@ export class Parameter<M> {
 
             args[this.name] = value as M;
         } else if (this.required) {
-            this.missingResponse(res);
+            if (!res.closed) {
+                this.missingResponse(res);
+            }
+
             return false;
         }
 
