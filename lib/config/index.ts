@@ -2,8 +2,6 @@ import { Request } from 'express';
 import { RateLimiter } from '../ratelimit';
 import { ExpressCache, setCache } from '../route';
 
-import * as AWS from 'aws-sdk';
-
 export interface DefaultsConfig {
     host?: string;
     port?: number;
@@ -37,10 +35,6 @@ export class Config implements DefaultsConfig {
 
     set cache(cache: ExpressCache<any>) {
         setCache(cache);
-    }
-
-    set awsConfig(awsConfig: AWSConfig) {
-        AWS.config.update(awsConfig);
     }
 }
 
