@@ -83,6 +83,10 @@ export class Parameter<M> {
         return this.name;
     }
 
+    public isRequired(): boolean {
+        return this.required;
+    }
+
     /**
      * Tests if the parameter provided is valid
      * @param _req The request object
@@ -90,7 +94,7 @@ export class Parameter<M> {
      * @param args The query or post body
      * @returns If the parameter is valid
      */
-    public test(_req: Request, res: Response, args: NodeJS.Dict<any>): boolean | void {
+    public test(_req: Request, res: Response, args: NodeJS.Dict<any>): boolean {
         if (args && this.name in args) {
             let value: string | M = args[this.name];
 

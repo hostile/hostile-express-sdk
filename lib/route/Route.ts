@@ -92,13 +92,14 @@ export class Route {
                 const query = req.query as NodeJS.Dict<any>;
                 const body = req.body as NodeJS.Dict<any>;
 
-                const neededFields = [
-                    ...this.parameters.map((parameter) => parameter.test(req, res, query)),
-                    ...this.postBodyFields.map((field) => field.test(req, res, body)),
-                ].filter((field) => !field);
+                const neededFields = [...this.parameters, ...this.postBodyFields];
 
-                if (neededFields.length > 0) {
-                    return;
+                for (const field of neededFields) {
+                    const data = this.parameters.includes(field) ? query : body;
+
+                    if (!field.test(req, res, data) && field.isRequired()) {
+                        return;
+                    }
                 }
 
                 return handler(req, res);
