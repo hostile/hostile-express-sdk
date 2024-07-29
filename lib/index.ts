@@ -1,5 +1,4 @@
 export * from './cache';
-export * from './log';
 export * from './parameter';
 export * from './ratelimit';
 export * from './route';
