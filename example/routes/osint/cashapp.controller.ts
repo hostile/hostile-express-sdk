@@ -15,7 +15,8 @@ const sandboxData = {
 export const cashAppGet = new Route(Method.GET, '/cashapp')
     .setParameters([new Parameter<string>().setName('username')])
     .setSandboxData(sandboxData)
-    .setHandler(resolveCashAppName);
+    .setHandler(resolveCashAppName)
+    .setPermissions(['hostile:cashapp']);
 
 export const cashAppPost = new Route(Method.POST, '/cashapp')
     .setPostBodyFields([new Parameter<string>().setName('username')])
