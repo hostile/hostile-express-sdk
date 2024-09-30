@@ -28,7 +28,7 @@ class PermissionMiddleware {
         const bearer: string = req.headers.authorization;
 
         if (!bearer) {
-            res.status(403).send({ status: 'error', message: 'Not sufficient permissions' });
+            res.status(403).send({ status: 'error', message: 'error.NotAuthenticated' });
             return;
         }
 
@@ -42,7 +42,7 @@ class PermissionMiddleware {
         const claims = await this.decodeJWT(req, res);
 
         if (claims && !(await this.hasRequiredClaims(claims, this.permissions))) {
-            res.status(403).send({ status: 'error', message: 'Not sufficient permissions' });
+            res.status(403).send({ status: 'error', message: 'error.NotAuthenticated' });
             return;
         }
 
