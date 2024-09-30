@@ -4,6 +4,8 @@ import { Parameter } from '../parameter';
 import { Method } from '../types';
 import { RateLimiter } from '../ratelimit';
 import { GlobalConfig } from '../config';
+import Permissions from '../types/Permissions';
+import PermissionMiddleware from '../permissions/PermissionMiddleware';
 
 export interface SandboxResponse {
     status: number;
@@ -22,6 +24,8 @@ export class Route {
 
     public method: Method;
     public path: string;
+    public permissions: string[];
+    public permissionMiddleware: PermissionMiddleware;
 
     constructor(method: Method, path: string) {
         this.method = method;
@@ -45,6 +49,17 @@ export class Route {
      */
     public setPostBodyFields(postFields: Parameter<any>[]): Route {
         this.postBodyFields = postFields;
+        return this;
+    }
+
+    /**
+     * Sets the permissions required to access the route
+     * @param permissions The permissions required to access the route
+     * @returns The current Route instance
+     */
+    public setPermissions(permissions: Permissions): Route {
+        this.permissions = permissions;
+        this.permissionMiddleware = new PermissionMiddleware(permissions);
         return this;
     }
 

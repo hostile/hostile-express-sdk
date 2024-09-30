@@ -49,5 +49,8 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/hostile/hostile-express-sdk.git"
+    },
+    "dependencies": {
+        "jsonwebtoken": "^9.0.2"
     }
 }

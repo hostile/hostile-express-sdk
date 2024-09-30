@@ -59,7 +59,13 @@ export class RouteGroup {
         const router = Router();
 
         this.routes.forEach((route) => {
-            (router as any)[route.method.toLowerCase()](route.path, route.routeHandler);
+            const PermissionMiddleware = route.permissionMiddleware;
+
+            (router as any)[route.method.toLowerCase()](
+                route.path,
+                PermissionMiddleware ? PermissionMiddleware.use.bind(PermissionMiddleware) : [],
+                route.routeHandler
+            );
         });
 
         return router;
