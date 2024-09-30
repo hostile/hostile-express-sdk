@@ -33,6 +33,12 @@ class PermissionMiddleware {
         }
 
         const decoded = jwt.decode(bearer.split(' ')[1]);
+
+        if (!decoded || !decoded.permissionNodes) {
+            res.status(403).send({ status: 'error', message: 'error.InvalidToken' });
+            return;
+        }
+
         const claims = decoded.permissionNodes;
         return claims;
     }
